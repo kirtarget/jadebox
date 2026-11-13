@@ -46,7 +46,7 @@ jobs:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
       - uses: actions/upload-artifact@v4
         with:
-          name: xenith-${{ runner.os }}
+          name: jadebox-${{ runner.os }}
           path: |
             release/*.exe
             release/*.zip

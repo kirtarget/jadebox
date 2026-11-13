@@ -15,7 +15,7 @@ import { showSteamKeyboard } from './steam-keyboard';
 type Invokable = Exclude<keyof XenithApi, 'on' | 'window' | 'sessionReport' | 'sessionStage'>;
 type WindowMethod = keyof XenithApi['window'];
 
-const ALLOWED_EXTERNAL = [/^https:\/\/www\.microsoft\.com\/link\/?(\?.*)?$/i, /^https:\/\/(www\.)?flydigi\.com\//i, /^https:\/\/github\.com\/kirtarget\/xenith\/releases(\/|$)/i];
+const ALLOWED_EXTERNAL = [/^https:\/\/www\.microsoft\.com\/link\/?(\?.*)?$/i, /^https:\/\/(www\.)?flydigi\.com\//i, /^https:\/\/github\.com\/kirtarget\/jadebox\/releases(\/|$)/i];
 export const isAllowedExternal = (url: unknown) => typeof url === 'string' && url.length < 2048 && ALLOWED_EXTERNAL.some((r) => r.test(url));
 
 export function registerIpc(core: XenithCore, getWindow: () => BrowserWindow | null, actions: { toggleFullscreen(): boolean; setFullscreen(on: boolean): boolean; quit(): void }) {

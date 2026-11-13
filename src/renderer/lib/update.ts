@@ -1,6 +1,6 @@
 // Release check against the public GitHub repo. No auto-install: the user downloads the new build themselves.
-export const RELEASES_URL = 'https://github.com/kirtarget/xenith/releases/latest';
-const LATEST_API = 'https://api.github.com/repos/kirtarget/xenith/releases/latest';
+export const RELEASES_URL = 'https://github.com/kirtarget/jadebox/releases/latest';
+const LATEST_API = 'https://api.github.com/repos/kirtarget/jadebox/releases/latest';
 
 const parts = (v: string) => /^v?(\d+)\.(\d+)\.(\d+)$/.exec(v.trim())?.slice(1).map(Number) ?? null;
 

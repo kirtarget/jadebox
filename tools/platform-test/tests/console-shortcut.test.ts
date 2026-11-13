@@ -18,7 +18,7 @@ test('console tile launches its selected Xbox and keeps identity after a rename'
   upsertShortcut(doc, renamed);
   const shortcuts = listShortcuts(parseShortcuts(serializeShortcuts(doc)));
   assert.equal(shortcuts.length, 1);
-  assert.equal(shortcuts[0].appName, 'Xenith: My Xbox - Bedroom');
+  assert.equal(shortcuts[0].appName, 'Jadebox: My Xbox - Bedroom');
   assert.equal(shortcuts[0].launchOptions, '--xhome=console-123');
 });
 

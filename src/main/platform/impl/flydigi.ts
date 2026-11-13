@@ -95,7 +95,7 @@ export function xhapticsAudioCheck(exePath: string, configuration: unknown, stat
     (Array.isArray(g.processNames) && g.processNames.some((n) => typeof n === 'string' && stem(n) === exe)) ||
     (typeof g.processPath === 'string' && stem(g.processPath) === exe));
   const name = exePath.split(/[\\/]/).pop() ?? exePath;
-  if (!game) return { state: 'warn', detail: `${name} is not added as a game in Space Station X-Haptics. Add it there so the engine captures Xenith's audio` };
+  if (!game) return { state: 'warn', detail: `${name} is not added as a game in Space Station X-Haptics. Add it there so the engine captures Jadebox's audio` };
   const title = typeof game.displayName === 'string' && game.displayName ? game.displayName : name;
   const cfg = obj(obj(obj(configuration).configurations)[String(game.gameId)]);
   if (cfg.enabled !== true) return { state: 'warn', detail: `X-Haptics is turned off for "${title}" in Space Station` };

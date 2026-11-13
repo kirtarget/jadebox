@@ -2,7 +2,7 @@
     "name": "xenith",
     "version": "0.2.1",
     "private": true,
-    "description": "Xenith вЂ” Xbox Remote Play client",
+    "description": "Jadebox вЂ” Xbox Remote Play client",
     "license": "MIT",
     "main": "dist/main.js",
     "scripts": {

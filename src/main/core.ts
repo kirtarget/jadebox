@@ -253,7 +253,7 @@ export class XenithCore {
     let files: string[] = [];
     try { files = readdirSync(dir).filter((f) => f.endsWith('.jsonl') && (f.startsWith(LOG_PREFIX) || f.startsWith('session-'))).sort((a, b) => statSync(join(dir, a)).mtimeMs - statSync(join(dir, b)).mtimeMs).slice(-6); } catch { /* no logs */ }
     const parts: string[] = [
-      `Xenith diagnostics ${new Date().toISOString()}`,
+      `Jadebox diagnostics ${new Date().toISOString()}`,
       `platform: ${JSON.stringify(this.platformInfo())}`,
       `settings: ${JSON.stringify(this.settings.get())}`,
       `account: signedIn=${this.acc.signedIn} hasCloud=${this.acc.hasCloud}`,
@@ -265,7 +265,7 @@ export class XenithCore {
       if (text.length > 1_000_000) text = '…(truncated)…\n' + text.slice(-1_000_000);
       parts.push(`\n===== ${f} =====\n${text}`);
     }
-    const out = join(app.getPath('downloads'), `xenith-logs-${new Date().toISOString().replace(/[:.]/g, '-')}.txt`);
+    const out = join(app.getPath('downloads'), `jadebox-logs-${new Date().toISOString().replace(/[:.]/g, '-')}.txt`);
     writeFileSync(out, redact(parts.join('\n')), 'utf8');
     log('logs.exported', { files: files.length });
     return out;

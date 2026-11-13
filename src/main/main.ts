@@ -100,7 +100,7 @@ function bootstrap() {
       width: 1440, height: 900, minWidth: 1024, minHeight: 640,
       backgroundColor: '#0B1018', show: false, autoHideMenuBar: true,
       fullscreen: s.ui.startFullscreen,
-      title: 'Xenith',
+      title: 'Jadebox',
       webPreferences: {
         preload: join(__dirname, 'preload.js'),
         contextIsolation: true, nodeIntegration: false, sandbox: true,
@@ -149,7 +149,7 @@ function bootstrap() {
     if (existsSync(html)) void w.loadFile(html, selftest ? { query: { selftest: '1' } } : undefined);
     else {
       logWarn('renderer.missing', { html });
-      void w.loadURL('data:text/html;charset=utf-8,' + encodeURIComponent('<body style="background:#0B1018;color:#9fb0c8;font:16px system-ui;padding:32px">Xenith: renderer bundle not found (dist/renderer/index.html). Run <code>node build.mjs</code>.</body>'));
+      void w.loadURL('data:text/html;charset=utf-8,' + encodeURIComponent('<body style="background:#0B1018;color:#9fb0c8;font:16px system-ui;padding:32px">Jadebox: renderer bundle not found (dist/renderer/index.html). Run <code>node build.mjs</code>.</body>'));
     }
   }
 

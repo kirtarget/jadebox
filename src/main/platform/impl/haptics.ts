@@ -102,7 +102,7 @@ function xhapticsGameAudio(installed: boolean): { state: 'ok' | 'warn' | 'unknow
   const dir = join(process.env.APPDATA ?? '', XHAPTICS_CONFIG_DIR);
   const read = (f: string): unknown => JSON.parse(readFileSync(join(dir, f), 'utf8').replace(/^﻿/, ''));
   try { return xhapticsAudioCheck(process.execPath, read('xhaptics_game_configuration.json'), read('xhaptics_game_status.json')); }
-  catch { return { state: 'warn', detail: `no X-Haptics game list in ${dir}. Open X-Haptics in Space Station and add Xenith as a game` }; }
+  catch { return { state: 'warn', detail: `no X-Haptics game list in ${dir}. Open X-Haptics in Space Station and add Jadebox (Xenith.exe) as a game` }; }
 }
 
 export async function hapticsDiagnostics(lastRumble: HapticsDiagnostics['rumble'], audioDeviceLabel: string | null): Promise<HapticsDiagnosticsExt> {
@@ -126,7 +126,7 @@ export async function hapticsDiagnostics(lastRumble: HapticsDiagnostics['rumble'
     flydigiDevice,
     spaceStation: ss,
     gameAudio,
-    audioReachesEngine: { state: 'unknown', detail: 'cannot be verified without the controller and Space Station: Xenith has no way to observe whether Space Station\'s haptic engine receives the audio' },
+    audioReachesEngine: { state: 'unknown', detail: 'cannot be verified without the controller and Space Station: Jadebox has no way to observe whether Space Station\'s haptic engine receives the audio' },
     rumble: lastRumble,
   };
 }

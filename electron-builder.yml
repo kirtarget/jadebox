@@ -1,10 +1,13 @@
-# Xenith packaging. Build `node build.mjs` first (dist/ must be self-contained: main, preload, renderer bundles).
+# Jadebox packaging. Build `node build.mjs` first (dist/ must be self-contained: main, preload, renderer bundles).
 #   Windows : npx electron-builder --win nsis zip
 #   Linux   : npx electron-builder --linux AppImage tar.gz   (AppImage needs a Linux host or CI — see build/linux/build-on-linux.md)
 #   macOS   : npx electron-builder --mac dmg zip               (macOS host / CI only)
+# appId, executable names and desktopName keep the old name Xenith: 0.2.x installs update in place, and Steam
+# shortcuts and X-Haptics game profiles that point at Xenith.exe keep working.
 appId: io.github.xenith.app
-productName: Xenith
-copyright: Copyright © 2026 Xenith contributors (MIT)
+productName: Jadebox
+executableName: Xenith
+copyright: Copyright © 2026 Jadebox contributors (MIT)
 directories:
   output: release
   buildResources: build
@@ -38,12 +41,12 @@ win:
 
 nsis:
   oneClick: false
-  perMachine: false                     # per-user install to %LOCALAPPDATA%\Programs\Xenith, no UAC
+  perMachine: false                     # per-user install to %LOCALAPPDATA%\Programs\Jadebox (0.2.x updates stay in Programs\Xenith), no UAC
   allowElevation: false
   allowToChangeInstallationDirectory: true
   createDesktopShortcut: always
   createStartMenuShortcut: true
-  shortcutName: Xenith
+  shortcutName: Jadebox
   menuCategory: false
   installerLanguages: [en_US, ru_RU]
   multiLanguageInstaller: true
@@ -63,19 +66,19 @@ linux:
   icon: build/icons
   category: Game
   executableName: xenith
-  maintainer: Xenith contributors
-  vendor: Xenith
+  maintainer: Jadebox contributors
+  vendor: Jadebox
   synopsis: Xbox Remote Play and Cloud Gaming client
   description: Open-source Xbox Remote Play / Xbox Cloud Gaming client, made for Steam Deck and Windows.
   artifactName: ${productName}-${version}-linux-${arch}.${ext}
   desktop:
     entry:
-      Name: Xenith
+      Name: Jadebox
       GenericName: Xbox Remote Play
       Comment: Xbox Remote Play and Cloud Gaming client
       Categories: Game;
       Keywords: xbox;remote play;xcloud;cloud gaming;steam deck;
-      StartupWMClass: Xenith
+      StartupWMClass: Jadebox
       Terminal: "false"
 
 appImage:
@@ -104,5 +107,5 @@ dmg:
 publish:
   provider: github
   owner: kirtarget
-  repo: xenith
+  repo: jadebox
   releaseType: release

@@ -2,7 +2,7 @@ import { copyFileSync, existsSync, mkdirSync, readFileSync, renameSync, writeFil
 import { join } from 'node:path';
 
 export const DECK_LAYOUT_FILE = 'controller_neptune_xenith.vdf';
-export const DECK_LAYOUT_TITLE = 'Xenith - Gyro and back buttons';
+export const DECK_LAYOUT_TITLE = 'Jadebox - Gyro and back buttons';
 const RIGHT_STICK_OUTPUT = '1';
 // Steam's gyro enable selector (order of the Gyro Enable Button list): 12 = Left Trigger Soft Pull,
 // the value Steam's own PS5 'Gamepad with Mouse and Gyro' template uses. 1 would be right-pad touch.

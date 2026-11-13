@@ -10,10 +10,11 @@ export function consoleShortcutSpec(console: Pick<ConsoleInfo, 'serverId' | 'nam
   }
   const exe = `"${target.exe}"`;
   return {
-    appName: `Xenith: My Xbox - ${console.name}`,
+    appName: `Jadebox: My Xbox - ${console.name}`,
     exe, startDir: `"${target.startDir}"`, icon: target.exe,
     launchOptions: `${target.argsPrefix}--xhome=${console.serverId}`,
-    tags: ['Xenith', 'Xbox Remote Play'],
+    tags: ['Jadebox', 'Xbox Remote Play'],
+    // The id seed keeps the old name so shortcuts created before the rename keep their id and artwork.
     appid: shortcutAppId(exe, `Xenith: Xbox ${console.serverId}`),
   };
 }

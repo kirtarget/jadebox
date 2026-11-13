@@ -48,7 +48,7 @@ export interface Settings {
     triggerRumble: boolean;
     deadZone: number;              // 0–0.3
     guideCombo: boolean;           // short press View+Menu = Xbox button
-    overlayCombo: boolean;         // hold View+Menu 0.6 s = Xenith menu
+    overlayCombo: boolean;         // hold View+Menu 0.6 s = Jadebox menu
     mouseKeyboard: boolean;
     remap: Record<string, string>; // e.g. { A: 'B' }, empty = default layout
   };
@@ -218,7 +218,7 @@ export interface SteamStatus {
   installed: boolean;
   running: boolean;
   userIds: string[];
-  libraryShortcut: boolean;        // Xenith shortcut present
+  libraryShortcut: boolean;        // Jadebox shortcut present
 }
 
 export interface PlatformInfo {
@@ -226,7 +226,7 @@ export interface PlatformInfo {
   isSteamDeck: boolean;
   isGamescope: boolean;            // SteamOS gaming mode
   deckModel?: 'lcd' | 'oled' | null;
-  version: string;                 // Xenith version
+  version: string;                 // Jadebox version
   electron: string;
   chrome: string;
   autoUpdate?: boolean;            // this build downloads and installs updates itself
@@ -289,7 +289,7 @@ export interface XenithApi {
     minimize(): Promise<void>;
     quit(): Promise<void>;
   };
-  openExternal(url: string): Promise<void>;   // only https://www.microsoft.com/link, the Flydigi download page and Xenith releases are allowed
+  openExternal(url: string): Promise<void>;   // only https://www.microsoft.com/link, the Flydigi download page and Jadebox releases are allowed
   copyText(text: string): Promise<void>;
   exportLogs(): Promise<string>;              // path of a zip/txt in Downloads, tokens redacted
 
