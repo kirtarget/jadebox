@@ -78,6 +78,13 @@ function bootstrap() {
 
   registerIpc(core, () => win, { toggleFullscreen, setFullscreen, quit: () => void quit() });
 
+  app.on('child-process-gone', (_e, d) => logWarn('process.gone', { type: d.type, reason: d.reason, exitCode: d.exitCode, name: d.name, serviceName: d.serviceName }));
+  let gpuStatus = '';
+  app.on('gpu-info-update', () => {
+    const s = JSON.stringify(app.getGPUFeatureStatus());
+    if (s !== gpuStatus) { gpuStatus = s; log('gpu.feature_status', JSON.parse(s)); }
+  });
+
   app.on('second-instance', (_e, argv) => {
     const intent = parseLaunchArgs(argv);
     log('app.second_instance', { intent });
@@ -132,6 +139,7 @@ function bootstrap() {
       void quit();
     });
     w.on('closed', () => { win = null; });
+    w.webContents.on('render-process-gone', (_e, d) => logWarn('renderer.gone', { reason: d.reason, exitCode: d.exitCode }));
 
     const html = process.env.XENITH_RENDERER_HTML ? resolve(process.env.XENITH_RENDERER_HTML) : join(__dirname, 'renderer', 'index.html');
     const selftest = process.env.XENITH_CORE_SELFTEST === '1';
@@ -147,6 +155,10 @@ function bootstrap() {
     Menu.setApplicationMenu(null);
     stopPowerEvents = registerPowerEvents(state => emit({ type: 'power', state }), () => core.sessions.stopAll('replaced'));
     createWindow();
+    app.getGPUInfo('basic').then((g: any) => log('gpu.info', {
+      devices: (g?.gpuDevice ?? []).map((d: any) => ({ active: d.active, vendorId: d.vendorId, deviceId: d.deviceId, driverVersion: d.driverVersion })),
+      overlays: g?.auxAttributes?.overlayInfo ?? null,
+    })).catch((e) => logWarn('gpu.info_failed', String(e)));
   });
 
   app.on('before-quit', (e) => {

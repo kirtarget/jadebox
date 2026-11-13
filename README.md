@@ -179,6 +179,8 @@ A keepalive issue ended the 594-second run. The fix passed a shorter integrated 
 - Flydigi Apex 6 Pro and X-Haptics still need testing with a physical controller.
 - X-Haptics does not need a Flydigi audio device, and the controller does not provide one. Add `Xenith.exe` as a game in Space Station's X-Haptics and keep any output device, headphones included. Space Station captures Xenith's audio directly. The "Game audio" check reads that Space Station game list. A development run (`electron.exe`) does not match a profile made for the installed app.
 - Steam Deck Gaming Mode and macOS require the follow-up checks described above.
+- If the GPU process restarts mid-stream (driver reset or crash), the sharpening canvas loses its WebGL context. Xenith now drops it and rebuilds it, so the picture returns within a fraction of a second. This was checked by killing the GPU process during a Remote Play session on Windows. Before this fix the screen stayed black until the app restarted.
+- The log in `%APPDATA%\Xenith\logs` records GPU and renderer process crashes (`process.gone`, `renderer.gone`), GPU info at start-up (`gpu.info`, `gpu.feature_status`), picture post-processing changes (`stream.post.*`), and a picture sample every 5 seconds when something changes (`stream.picture`). `stream.black_video` means the console itself sent a black picture for 15 seconds. A normal `stream.picture` brightness while the screen looks black points to the display path, not the stream.
 
 ## Build from source
 

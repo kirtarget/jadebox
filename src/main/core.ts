@@ -205,6 +205,11 @@ export class XenithCore {
     if (!r || typeof r !== 'object') return;
     this.rumble = { state: 'ok', lastEventAt: Date.now(), last: { left: clamp01(r.left), right: clamp01(r.right), lt: clamp01(r.lt), rt: clamp01(r.rt) } };
   }
+  reportStreamDiag(event: string, data?: unknown) {
+    if (typeof event !== 'string' || !/^[a-z][a-z0-9_.]{0,40}$/.test(event)) return;
+    const body = JSON.stringify(data ?? null);
+    log(`stream.${event}`, body.length > 2000 ? body.slice(0, 2000) : data, /err|black/.test(event) ? 'warn' : 'info');
+  }
 
   async hapticsDiagnostics(): Promise<HapticsDiagnostics> {
     const id = this.settings.get().audio.outputDeviceId;

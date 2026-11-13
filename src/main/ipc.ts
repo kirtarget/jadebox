@@ -94,6 +94,7 @@ export function registerIpc(core: XenithCore, getWindow: () => BrowserWindow | n
     sessionStage: (id, ev) => core.sessionStage(String(id), ev),
     reportAudioOutputs: (list) => core.reportAudioOutputs(list),
     reportRumble: (r) => core.reportRumble(r),
+    reportStreamDiag: (event, data) => core.reportStreamDiag(event, data),
   };
   for (const [name, fn] of Object.entries(fire)) on(name, fn);
 }

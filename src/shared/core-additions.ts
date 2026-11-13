@@ -12,6 +12,9 @@ export interface XenithCoreExtras {
   /** Renderer forwards StreamController 'rumble' events (throttle to ≤10 Hz) so
    *  hapticsDiagnostics() can show the last rumble. Fire-and-forget. */
   reportRumble(r: RumbleSample): void;
+  /** Renderer stream diagnostics (picture state, post-processing errors) written to the main log as
+   *  `stream.<event>`. Fire-and-forget. */
+  reportStreamDiag(event: string, data?: unknown): void;
 }
 
 /** Extra event: a second launch (e.g. a Steam shortcut with --xcloud=<titleId>) while Xenith is running. */

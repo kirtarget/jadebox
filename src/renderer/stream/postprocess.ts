@@ -27,6 +27,13 @@ export class PostProcessor {
   private ro: ResizeObserver;
   private debounce: number | null = null;
   private onVideoResize = () => this.schedule();
+  /** A GPU process restart loses the canvas context while the hidden <video> keeps playing: without this the
+   *  screen stays black. The canvas is dropped (video shows at once) and rebuilt on a fresh context. */
+  private onContextLost = () => {
+    this.log('post.context_lost', this.mode);
+    this.teardownMode();
+    this.schedule();
+  };
 
   constructor(private holder: HTMLElement, private video: HTMLVideoElement, private player: any, private log: (t: string, d?: unknown) => void = () => {}) {
     this.ro = new ResizeObserver(() => this.schedule());
@@ -103,11 +110,13 @@ export class PostProcessor {
         p.updateOptions({ processing: 'cas', processingMode: 'quality', sharpness: casFactor(c.sharpness), brightness: 100, contrast: 100, saturation: 100 } as any);
         const cv = p.getCanvas();
         Object.assign(cv.style, { position: 'absolute', inset: '0', width: '100%', height: '100%', objectFit: c.fit, pointerEvents: 'none' });
+        cv.addEventListener('webglcontextlost', this.onContextLost, { once: true });
         this.cas = p;
         p.init().catch((e) => this.log('post.cas.err', String(e)));
       } else if (m === 'fsr') {
         const cv = document.createElement('canvas');
         Object.assign(cv.style, { position: 'absolute', pointerEvents: 'none' });
+        cv.addEventListener('webglcontextlost', this.onContextLost, { once: true });
         this.holder.appendChild(cv);
         this.fsrCanvas = cv;
         this.player._videoComponent.startFSR(cv, rcasStops(c.sharpness));
@@ -122,8 +131,13 @@ export class PostProcessor {
   }
 
   private teardownMode() {
-    if (this.cas) { try { this.cas.destroy(); } catch { /* ignore */ } this.cas = null; }
+    if (this.cas) {
+      this.cas.getCanvas().removeEventListener('webglcontextlost', this.onContextLost); // destroy() loses it on purpose
+      try { this.cas.destroy(); } catch { /* ignore */ }
+      this.cas = null;
+    }
     if (this.fsrCanvas) {
+      this.fsrCanvas.removeEventListener('webglcontextlost', this.onContextLost);
       try { this.player._videoComponent?.stopFSR(); } catch { /* ignore */ }
       this.fsrCanvas.remove();
       this.fsrCanvas = null;

@@ -10,6 +10,7 @@ import { StatsSampler } from './stats';
 import { InputManager } from './input';
 import { AudioTap } from './audio';
 import { PostProcessor, type PostConfig } from './postprocess';
+import { PictureWatch, videoLuma } from './picture';
 
 export { effectiveSettings } from './settings-map';
 export { describeCodec } from './sdp';
@@ -90,6 +91,9 @@ interface Live {
   lostTimer: number | null;
   answerSdp: string | null;
   connectedAt: number;
+  ticks: number;
+  pic: PictureWatch;
+  picCtx: CanvasRenderingContext2D | null;
 }
 
 export class XenithStreamController implements StreamController {
@@ -133,7 +137,21 @@ export class XenithStreamController implements StreamController {
 
   private debug(type: string, data?: unknown) {
     const e = { at: Date.now(), type, data };
+    if (type.startsWith('post.')) this.diag(type, data);
     for (const fn of this.debugListeners) { try { fn(e); } catch { /* ignore */ } }
+  }
+
+  private diag(event: string, data?: unknown) {
+    try { (window.xenith as XenithApiFull).reportStreamDiag?.(event, data); } catch { /* ignore */ }
+  }
+
+  private samplePicture(live: Live) {
+    const v = live.video;
+    if (!v) return;
+    live.picCtx ??= Object.assign(document.createElement('canvas'), { width: 32, height: 18 }).getContext('2d', { willReadFrequently: true });
+    if (!live.picCtx) return;
+    const ev = live.pic.push({ mode: live.post?.mode ?? 'none', w: v.videoWidth, h: v.videoHeight, videoOpacity: v.style.opacity || '1', luma: videoLuma(v, live.picCtx) });
+    if (ev) this.diag(ev.event, { session: live.sessionId, ...ev.data });
   }
 
   private setState(s: StreamState) {
@@ -285,7 +303,7 @@ export class XenithStreamController implements StreamController {
 
     const live: Live = {
       gen, sessionId, player, pc, holder, sampler: null as any, input: null as any, post: null, audioTap: null, audioEl: null,
-      video: null, timers: [], connected: false, firstFrame: null, firstFrameSent: false, inputStarted: false, lostTimer: null, answerSdp: null, connectedAt: 0,
+      video: null, timers: [], connected: false, firstFrame: null, firstFrameSent: false, inputStarted: false, lostTimer: null, answerSdp: null, connectedAt: 0, ticks: 0, pic: new PictureWatch(), picCtx: null,
     };
     live.sampler = new StatsSampler(pc, () => live.answerSdp);
     this.live = live; // before install(): the first controllers scan must reach listeners
@@ -375,6 +393,7 @@ export class XenithStreamController implements StreamController {
     if (this.live !== live) return;
     if (this.reSessions > 0 && live.connectedAt && Date.now() - live.connectedAt > XenithStreamController.STABLE_RESET_MS) { this.reSessions = 0; this.debug('resession.budget.reset'); }
     if (live.pc.connectionState === 'closed' && !this.stopping) { this.handleLoss('pc-closed'); return; }
+    if (live.firstFrame && ++live.ticks % 5 === 0) this.samplePicture(live);
     try {
       const r = await live.sampler.sample();
       if (!r || this.live !== live) return;
