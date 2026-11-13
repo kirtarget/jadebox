@@ -42,6 +42,7 @@ export function sectionRows(section: SettingsSection, i18n: I18n, st: Settings, 
       return [
         { kind: 'slider', path: 'video.sharpness', title: s.video.sharpness, desc: s.video.sharpnessDesc, min: 0, max: 10, step: 1, format: v => i18n.s.stream.sharpnessValue(v) },
         { kind: 'toggle', path: 'video.upscaleFsr', title: s.video.fsr, desc: s.video.fsrDesc },
+        { kind: 'toggle', path: 'video.dropRepeatedFrames', title: s.video.dropRepeated, desc: s.video.dropRepeatedDesc },
         { kind: 'group', title: s.video.picture, key: 'pic' },
         { kind: 'slider', path: 'video.brightness', title: s.video.brightness, desc: s.video.pictureDesc, ...pct },
         { kind: 'slider', path: 'video.contrast', title: s.video.contrast, ...pct },

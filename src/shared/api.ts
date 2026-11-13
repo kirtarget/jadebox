@@ -30,6 +30,7 @@ export interface Settings {
   video: {
     sharpness: number;             // 0 = off … 10
     upscaleFsr: boolean;           // FSR 1.0 EASU when window is larger than the stream
+    dropRepeatedFrames: boolean;   // draw only changed frames (for Lossless Scaling over the window)
     brightness: number;            // 0.5–1.5, 1 = neutral (CSS filter on <video>)
     contrast: number;              // 0.5–1.5
     saturation: number;            // 0.5–1.5
@@ -78,7 +79,7 @@ export interface Settings {
 
 export const DEFAULT_SETTINGS: Settings = {
   streaming: { profile: 'low-latency', resolution: 'auto', bitrateMode: 'auto', customKbps: 20000, codec: 'main', autoConnectOnLaunch: false, lastServerId: null, matchRefresh: true },
-  video: { sharpness: 0, upscaleFsr: false, brightness: 1, contrast: 1, saturation: 1, fit: 'contain', cloudFits: {}, hud: 'off', hudCorner: 'top-left' },
+  video: { sharpness: 0, upscaleFsr: false, dropRepeatedFrames: false, brightness: 1, contrast: 1, saturation: 1, fit: 'contain', cloudFits: {}, hud: 'off', hudCorner: 'top-left' },
   audio: { outputDeviceId: '', volume: 1 },
   controllers: { vibration: true, triggerRumble: true, deadZone: 0.1, guideCombo: true, overlayCombo: true, mouseKeyboard: false, remap: {} },
   haptics: { bridgeMode: false },

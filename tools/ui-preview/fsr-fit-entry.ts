@@ -42,7 +42,7 @@ async function run() {
   component._video = video;
   player._videoComponent = component;
   const processor = new PostProcessor(holder, video, player);
-  const config: PostConfig = { sharpness: 3, fsr: true, brightness: 1, contrast: 1, saturation: 1, fit: 'contain', bridge: false };
+  const config: PostConfig = { sharpness: 3, fsr: true, brightness: 1, contrast: 1, saturation: 1, fit: 'contain', dedupe: false, bridge: false };
   try {
     await video.play();
     await until(() => video.videoWidth === 320 && video.videoHeight === 180, 'Synthetic video did not decode');

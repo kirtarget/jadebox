@@ -39,7 +39,7 @@ You can sharpen the picture (CAS), upscale a lower-resolution stream (FSR 1.0), 
 
 ### Smoother picture with Lossless Scaling
 
-Xenith has no built-in frame generation. On Windows you can run Lossless Scaling over the Xenith window to add generated frames. This can turn a 30 fps console game into 60 fps on your screen. See [Frame generation with Lossless Scaling](#frame-generation-with-lossless-scaling) for the settings and limits. This setup has not been tested with Xenith yet.
+Xenith has no built-in frame generation. On Windows you can run Lossless Scaling over the Xenith window to add generated frames. This can turn a 30 fps console game into 60 fps on your screen. Turn on "Drop repeated frames" in Settings > Video for this: the stream repeats every frame of a 30 fps game, and Xenith then shows only the new ones. See [Frame generation with Lossless Scaling](#frame-generation-with-lossless-scaling) for the settings and limits. Lossless Scaling over Xenith has not been tested on real hardware yet.
 
 ### Gamepad first
 
@@ -55,7 +55,7 @@ Some Flydigi controllers (for example the Apex series) have X-Haptics. Flydigi S
 
 Controller bridge mode solves this. You play on the TV connected to the Xbox, as usual. The controller connects to the PC. Xenith forwards your input from the PC to the console, receives the game sound, and plays it so Space Station can turn it into vibration. Xenith hides the video on the PC, because you watch the TV. The TV picture comes straight from the Xbox over HDMI, with no streaming delay or compression.
 
-Turn it on in Settings > X-Haptics > Controller bridge. While it is on, the PC screen shows a note with a "Show video" button, so a black window is not mistaken for a fault. The same settings page checks the controller, Space Station, and the game audio. Hiding the video cut PC GPU load from about 1% to almost zero in a hardware test. The full setup with a physical Flydigi controller still needs testing.
+Turn it on in Settings > X-Haptics > Controller bridge. While it is on, the PC screen shows a note with a "Show video" button, so a black window is not mistaken for a fault. The same settings page checks the controller, Space Station, and the game audio. Hiding the video cut PC GPU load from about 1% to almost zero in a hardware test. The project owner checked the setup with a physical Flydigi controller on November 13, 2026 and reported that it works. That check has no recorded measurements.
 
 ### Reconnection and privacy
 
@@ -155,6 +155,7 @@ This setup has not been tested with Xenith yet. The steps below follow how Lossl
 1. Settings > Streaming: pick the "Lowest latency" profile. A longer video buffer adds to LSFG's own delay.
 2. Settings > Video: set Sharpness (CAS) to 0 and turn FSR upscaling off. Lossless Scaling then works on the clean picture and does not process it twice.
 3. Keep "Picture size" on "Fit".
+4. Settings > Video: turn on "Drop repeated frames". See below for why.
 
 ### Settings in Lossless Scaling
 
@@ -172,9 +173,17 @@ This setup has not been tested with Xenith yet. The steps below follow how Lossl
 2. Press Ctrl+Alt+S, the default Lossless Scaling hotkey, while the Xenith window is in front. Or click "Scale" in Lossless Scaling and switch to Xenith within the delay.
 3. Press the hotkey again to stop.
 
-### Open question: 30 fps game in a 60 fps stream
+### Why drop repeated frames
 
-The Xbox stream runs at 60 fps even when the game itself runs at 30. In that case every game frame reaches the PC twice. LSFG may then see the repeated frames and generate nothing new between them, and the picture stays at 30 fps of motion. This is the first thing to check in a hardware test with a 30 fps game such as Red Dead Redemption 2 or GTA V in Fidelity mode.
+The Xbox stream runs at 60 fps even when the game itself runs at 30. Every game frame then reaches the PC twice. Without the filter, LSFG sees pairs of identical frames, has nothing to draw between them, and the motion stays at 30 fps.
+
+With "Drop repeated frames" on, Xenith compares each new frame with the last one it showed and draws it only when the picture changed. The window then updates about 30 times a second with real game frames, and LSFG x2 fills the gaps up to 60. A 60 fps game is not affected: every frame differs, so every frame is drawn.
+
+- It works only when sharpness is 0 and FSR is off. With either of them on, Xenith uses that picture path instead.
+- A frame counts as new when some 30 x 30 pixel area of a 1080p picture changed by more than a small threshold. Xenith always draws at least every fourth frame, so very slow changes still reach the screen.
+- The log records a `stream.post.dedupe` line every 5 seconds with frames received, drawn, and skipped. On a 30 fps game about half the frames should be skipped.
+
+A synthetic check passed. A 30-in-60 test source made the window repaint 31 times a second instead of 62, and a 60 fps source with an 8-pixel object moving 2 pixels a frame still repainted 62 times a second. The filter has not run on a real Xbox stream yet. Compression noise on real repeated frames may be higher than in the test. Check the `stream.post.dedupe` numbers with a 30 fps game such as Red Dead Redemption 2 or GTA V in Fidelity mode.
 
 ## Launch arguments
 
@@ -260,11 +269,10 @@ A keepalive issue ended the 594-second run. The fix passed a shorter integrated 
 - Xenith supports 1440p streaming. The hardware measurements above used a 1080p stream and do not describe the app's maximum resolution. Stream statistics show the resolution actually received.
 - The tested console ignored requests for bitrates above about 18 Mbps. Lower bitrate limits worked.
 - Cloud traffic routed through a VPN may connect without video. Excluding Xenith or the Xbox Cloud servers from the tunnel may help.
-- Flydigi Apex 6 Pro and X-Haptics still need testing with a physical controller.
 - X-Haptics does not need a Flydigi audio device, and the controller does not provide one. Add `Xenith.exe` as a game in Space Station's X-Haptics and keep any output device, headphones included. Space Station captures Xenith's audio directly. The "Game audio" check reads that Space Station game list. A development run (`electron.exe`) does not match a profile made for the installed app.
 - Steam Deck Gaming Mode and macOS require the follow-up checks described above.
 - If the GPU process restarts mid-stream (driver reset or crash), the sharpening canvas loses its WebGL context. Xenith now drops it and rebuilds it, so the picture returns within a fraction of a second. This was checked by killing the GPU process during a Remote Play session on Windows. Before this fix the screen stayed black until the app restarted.
-- The log in `%APPDATA%\Xenith\logs` records GPU and renderer process crashes (`process.gone`, `renderer.gone`), GPU info at start-up (`gpu.info`, `gpu.feature_status`), picture post-processing changes (`stream.post.*`), and a picture sample every 5 seconds when something changes (`stream.picture`). `stream.black_video` means the console itself sent a black picture for 15 seconds. A normal `stream.picture` brightness while the screen looks black points to the display path, not the stream. Connection and controller events are logged too: WebRTC state (`stream.pc.state`), stream state (`stream.state`), the cause of a lost stream (`stream.loss`, for example `disconnected` or `main:...`), each automatic re-session (`stream.resession*`; the old session then ends with reason `replaced`), the controller list (`stream.controllers`) and the pad Xenith sends to the console (`stream.pad.active`, `null` when none).
+- The log in `%APPDATA%\Xenith\logs` records GPU and renderer process crashes (`process.gone`, `renderer.gone`), GPU info at start-up (`gpu.info`, `gpu.feature_status`), picture post-processing changes (`stream.post.*`, including `stream.post.dedupe` counts for the repeated-frame filter), and a picture sample every 5 seconds when something changes (`stream.picture`). `stream.black_video` means the console itself sent a black picture for 15 seconds. A normal `stream.picture` brightness while the screen looks black points to the display path, not the stream. Connection and controller events are logged too: WebRTC state (`stream.pc.state`), stream state (`stream.state`), the cause of a lost stream (`stream.loss`, for example `disconnected` or `main:...`), each automatic re-session (`stream.resession*`; the old session then ends with reason `replaced`), the controller list (`stream.controllers`) and the pad Xenith sends to the console (`stream.pad.active`, `null` when none).
 
 ## Build from source
 
@@ -303,6 +311,12 @@ Check live Fit/Fill/Stretch changes with the real FSR WebGL pipeline and a gener
 
 ```bash
 node tools/ui-preview/check-fsr.mjs
+```
+
+Check the repeated-frame filter. A synthetic 60 fps source runs with and without repeats, and the check counts real window repaints.
+
+```bash
+node tools/ui-preview/check-dedupe.mjs
 ```
 
 Preview and check the English interface on desktop and Steam Deck layouts with fixture data.

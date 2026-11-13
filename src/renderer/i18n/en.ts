@@ -175,6 +175,7 @@ export const en: Strings = {
       intro: 'Picture processing on this device. Applies immediately, even while playing.',
       sharpness: 'Sharpness', sharpnessDesc: 'Sharpens the picture. The stream resolution does not change.',
       fsr: 'FSR upscaling', fsrDesc: 'Upscales cleanly when the window is larger than the stream, for example 1080p on a 1440p screen.',
+      dropRepeated: 'Drop repeated frames', dropRepeatedDesc: 'For Lossless Scaling over Xenith. A 30 fps game arrives in a 60 fps stream with every frame twice. Xenith shows only new frames, so frame generation sees real motion. Works when sharpness is 0 and FSR is off.',
       picture: 'Picture', brightness: 'Brightness', contrast: 'Contrast', saturation: 'Saturation', pictureDesc: '100 % is what the console sends',
       fit: 'Picture size', fitDesc: 'How the stream fits the window when aspect ratios differ.',
       fitOpts: { contain: 'Fit', cover: 'Fill', fill: 'Stretch' },

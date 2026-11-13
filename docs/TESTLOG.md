@@ -129,6 +129,23 @@ Live sanity (HW, 40 s): `setOverlayOpen(true/false)` and `requestKeyframe()` mid
 [TODO HW] Gamepads are not visible to the inactive harness window (Chromium exposes pads only to a focused page after a button press): combos, Guide, controller list and pad rumble playback still need a focused hands-on test.
 
 
+## 2026-11-13
+
+### F1 [HW, owner] Flydigi controller and X-Haptics
+The project owner checked a physical Flydigi controller with Xenith and reported that it works. No measurements were recorded.
+
+### D1 [LOCAL] Repeated-frame filter (`video.dropRepeatedFrames`, `node tools/ui-preview/check-dedupe.mjs`)
+Electron offscreen window, synthetic 1280x720 canvas source at 60 ticks/s. Repeats carry faint noise (alpha 0.006) like an encoder refinement. Moving object 8x8 px, 2 px per step. Window repaints counted from offscreen `paint` events over 3 s.
+
+| Phase | Repaints/s | Filter frames | Drawn | Skipped | Max skipped mean | Min drawn mean |
+|---|---|---|---|---|---|---|
+| Filter off, 30 in 60 | 62.5 | - | - | - | - | - |
+| Filter on, 30 in 60 | 31.3 | 188 | 94 | 94 | 0.50 | 7.63 |
+| Filter on, 60 unique | 62.5 | 188 | 188 | 0 | 0.00 | 7.63 |
+| Filter off, 60 unique | 62.2 | - | - | - | - | - |
+
+Threshold `CHANGED_MEAN` = 2 (0..255). [TODO HW] Real Xbox stream with a 30 fps game: read `stream.post.dedupe` and confirm skipped is about half and the threshold separates real repeats from real motion. Lossless Scaling over the filtered window not tested.
+
 ### E1 [HW] Integrated app end-to-end (main @ merge of core/ui/stream/platform, 2026-10-22 21:38)
 `electron . --xhome` → auto-connect → first frame **9.45 s** (console On) → real dashboard rendered in the Xenith window (screenshot verified) → 59 s at 1920×1080 60 fps, avg 16.1 Mbps → window close → session DELETE ok → history entry written (58-point bitrate trace). Packaged `release\win-unpacked\Xenith.exe` (0.2.0) starts and responds.
 Fixed during integration: keepalive no longer kills a healthy stream on `400 SessionInUnexpectedState` (stream agent S17); verifies via renderer health and `/state`. 10-minute run with the fix: not yet repeated.

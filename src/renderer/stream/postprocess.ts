@@ -1,15 +1,17 @@
 // Picture pipeline on top of the vendored <video>: CSS picture filters + fit, CAS sharpening (vendored WebGL2Player),
-// FSR 1.0 EASU+RCAS (vendored Video.startFSR, three.js), and Controller Bridge (nothing rendered).
+// FSR 1.0 EASU+RCAS (vendored Video.startFSR, three.js), repeated-frame filter (dedupe.ts), and Controller Bridge (nothing rendered).
 import { WebGL2Player } from '../../../vendor/xstreaming-player/src/Fsr/WebGL2Player';
 import type { VideoFit } from '../../shared/api';
+import { FrameDedupe } from './dedupe';
 
-export type PostMode = 'none' | 'cas' | 'fsr' | 'hidden';
+export type PostMode = 'none' | 'cas' | 'fsr' | 'dedupe' | 'hidden';
 
 export interface PostConfig {
   sharpness: number;   // 0..10 (effective)
   fsr: boolean;
   brightness: number; contrast: number; saturation: number;
   fit: VideoFit;
+  dedupe: boolean;     // draw only frames that differ, for frame generation over the window
   bridge: boolean;
 }
 
@@ -24,6 +26,8 @@ export class PostProcessor {
   private ready = false;
   private cas: WebGL2Player | null = null;
   private fsrCanvas: HTMLCanvasElement | null = null;
+  private dedupe: FrameDedupe | null = null;
+  private dedupeTimer: number | null = null;
   private ro: ResizeObserver;
   private debounce: number | null = null;
   private onVideoResize = () => this.schedule();
@@ -79,6 +83,7 @@ export class PostProcessor {
     if (!this.ready) return 'none';
     if (c.fsr && this.upscaling()) return 'fsr';
     if (c.sharpness > 0) return 'cas';
+    if (c.dedupe) return 'dedupe';
     return 'none';
   }
 
@@ -97,12 +102,13 @@ export class PostProcessor {
     else if (m === 'cas') this.cas?.updateOptions({ sharpness: casFactor(c.sharpness) } as any, true);
     else if (m === 'fsr') this.player._videoComponent?.setRcasStops(rcasStops(c.sharpness));
     if (this.cas) this.cas.getCanvas().style.objectFit = c.fit;
+    if (this.dedupe) this.dedupe.canvas.style.objectFit = c.fit;
   }
 
   private setupMode(m: PostMode, c: PostConfig) {
     this.mode = m;
     this.video.style.display = m === 'hidden' ? 'none' : '';
-    this.video.style.opacity = m === 'cas' || m === 'fsr' ? '0' : '1';
+    this.video.style.opacity = m === 'cas' || m === 'fsr' || m === 'dedupe' ? '0' : '1';
     try {
       if (m === 'cas') {
         const p = new WebGL2Player(this.video);
@@ -120,6 +126,16 @@ export class PostProcessor {
         this.holder.appendChild(cv);
         this.fsrCanvas = cv;
         this.player._videoComponent.startFSR(cv, rcasStops(c.sharpness));
+      } else if (m === 'dedupe') {
+        const d = new FrameDedupe(this.video);
+        Object.assign(d.canvas.style, { position: 'absolute', inset: '0', width: '100%', height: '100%', objectFit: c.fit, pointerEvents: 'none' });
+        d.canvas.addEventListener('webglcontextlost', this.onContextLost, { once: true });
+        this.holder.appendChild(d.canvas);
+        this.dedupe = d;
+        this.dedupeTimer = window.setInterval(() => {
+          if (d.stats.frames) this.log('post.dedupe', d.stats);
+          d.stats = { frames: 0, drawn: 0, skipped: 0, maxSkippedMean: 0, minDrawnMean: null };
+        }, 5000);
       }
       this.log('post.mode', m);
     } catch (e) {
@@ -142,6 +158,13 @@ export class PostProcessor {
       this.fsrCanvas.remove();
       this.fsrCanvas = null;
     }
+    if (this.dedupe) {
+      this.dedupe.canvas.removeEventListener('webglcontextlost', this.onContextLost);
+      this.dedupe.stop();
+      this.dedupe.canvas.remove();
+      this.dedupe = null;
+    }
+    if (this.dedupeTimer !== null) { clearInterval(this.dedupeTimer); this.dedupeTimer = null; }
     this.video.style.opacity = '1';
     this.video.style.display = '';
     this.mode = 'none';
