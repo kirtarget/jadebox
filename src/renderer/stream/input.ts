@@ -91,10 +91,12 @@ export class InputManager {
 
   /** Steam Deck: mouse/keyboard forwarded for this session regardless of the setting (trackpad mouse in cloud games). */
   autoMouseKeyboard = false;
+  /** Console Remote Play takes no mouse input, so the cursor is never captured there. */
+  cloud = false;
 
   apply(s: Settings) {
     const c = s.controllers;
-    const mkb = c.mouseKeyboard || this.autoMouseKeyboard;
+    const mkb = this.cloud && (c.mouseKeyboard || this.autoMouseKeyboard);
     this.guideCombo = c.guideCombo;
     this.overlayCombo = c.overlayCombo;
     this.triggerRumble = c.triggerRumble;
@@ -120,11 +122,13 @@ export class InputManager {
   setPaused(p: boolean) {
     if (p === this.paused) return;
     this.paused = p;
+    if (p && document.pointerLockElement) document.exitPointerLock();   // the overlay needs the cursor
     this.comboActive = false; this.comboFired = false; this.viewDownAt = 0; this.nexusUntil = 0;
     if (!p) this.resumeGateUntil = performance.now() + RESUME_GATE_MS;
   }
 
   dispose() {
+    if (document.pointerLockElement) document.exitPointerLock();
     if (this.timer !== null) clearInterval(this.timer);
     this.timer = null;
     window.removeEventListener('gamepadconnected', this.onPad);

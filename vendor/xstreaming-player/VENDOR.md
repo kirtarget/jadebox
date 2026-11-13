@@ -25,6 +25,8 @@ Every patch is marked in the source with a `Xenith patch:` comment.
 8. `src/Driver/Gamepad.ts` — the built-in View+Menu → Nexus mapping can be disabled with `player._xenith_nexus_combo = false`
    (Xenith handles View+Menu itself: short press = Nexus, hold 600 ms = Xenith overlay).
 9. `src/Fsr/WebGL2Player.ts` — the CAS/USM canvas follows stream resolution changes (upstream sized it once at creation).
+10. `src/Channel/Input.ts` — mouse capture requests pointer lock only. Upstream also went document fullscreen and called
+    `navigator.keyboard.lock()`, which captured Alt+Tab, Win and Alt+F4 until the app was killed.
 
 Known upstream behaviours left as-is (worked around in `src/renderer/stream/`):
 - `Driver/Keyboard.ts` looks keys up on the config object instead of `_keymapping`, so legacy keyboard→gamepad mapping never fires.

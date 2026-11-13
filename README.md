@@ -48,7 +48,7 @@ Jadebox has no built-in frame generation. On Windows you can run Lossless Scalin
 
 ### Gamepad first
 
-The whole app works with a gamepad, no mouse needed. During a game, tap View + Menu together to press the Xbox button, or hold them to open the Jadebox menu. You can set stick dead zones, rumble, and trigger rumble. Mouse and keyboard work in cloud games that support them.
+The whole app works with a gamepad, no mouse needed. During a game, tap View + Menu together to press the Xbox button, or hold them to open the Jadebox menu. You can set stick dead zones, rumble, and trigger rumble. Mouse and keyboard work in cloud games that support them. With "Mouse and keyboard" on, clicking the picture captures the cursor in a cloud game. Esc releases it, and Alt+Tab and the Win key keep working. Console Remote Play never captures the cursor.
 
 ### Steam and Steam Deck
 

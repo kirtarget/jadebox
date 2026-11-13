@@ -653,12 +653,8 @@ export default class InputChannel extends BaseChannel {
             unadjustedMovement: true,
         })
 
-        if ('keyboard' in navigator && 'lock' in (navigator.keyboard as any)) {
-            document.body.requestFullscreen().then(() => {
-                (navigator as any).keyboard.lock()
-            })
-        }
-      
+        // Xenith patch: no requestFullscreen() + navigator.keyboard.lock() here. The lock took Alt+Tab, Win and
+        // Alt+F4 from Windows, so players could not leave or close the app. Pointer lock alone still releases on Esc.
         return promise.then(() => {
             console.log('pointer is locked')
             this._mouseLocked = true
