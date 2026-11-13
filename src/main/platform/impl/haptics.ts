@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import type { HapticsDiagnostics } from '../../../shared/api';
 import {
   Connection, connectionFromLinuxBus, connectionFromWindows, isSpaceStationApp, matchFlydigi, parseLinuxHidDir,
-  parseWindowsIds, SPACE_STATION_PROCESS, SPACE_STATION_UNINSTALL_KEY,
+  parseWindowsIds, SPACE_STATION_PROCESS, SPACE_STATION_UNINSTALL_KEY, XHAPTICS_CONFIG_DIR, xhapticsAudioCheck,
 } from './flydigi';
 import { powershellJson, processNames } from './sys';
 
@@ -96,6 +96,15 @@ function probeLinux(): FlydigiDeviceHit[] {
   return hits;
 }
 
+function xhapticsGameAudio(installed: boolean): { state: 'ok' | 'warn' | 'unknown'; detail: string } {
+  if (process.platform !== 'win32') return { state: 'unknown', detail: 'X-Haptics audio capture needs Flydigi Space Station, which is Windows-only' };
+  if (!installed) return { state: 'unknown', detail: 'install Flydigi Space Station first' };
+  const dir = join(process.env.APPDATA ?? '', XHAPTICS_CONFIG_DIR);
+  const read = (f: string): unknown => JSON.parse(readFileSync(join(dir, f), 'utf8').replace(/^﻿/, ''));
+  try { return xhapticsAudioCheck(process.execPath, read('xhaptics_game_configuration.json'), read('xhaptics_game_status.json')); }
+  catch { return { state: 'warn', detail: `no X-Haptics game list in ${dir}. Open X-Haptics in Space Station and add Xenith as a game` }; }
+}
+
 export async function hapticsDiagnostics(lastRumble: HapticsDiagnostics['rumble'], audioDeviceLabel: string | null): Promise<HapticsDiagnosticsExt> {
   let hits: FlydigiDeviceHit[] = [];
   let ss: HapticsDiagnosticsExt['spaceStation'];
@@ -111,12 +120,8 @@ export async function hapticsDiagnostics(lastRumble: HapticsDiagnostics['rumble'
     ? { state: 'ok', name: dev.name, connection: dev.connection, candidates: hits,
         detail: `${dev.model} (${dev.by === 'id' ? 'matched by USB id' : dev.by === 'vendor' ? 'matched by Flydigi vendor id' : 'matched by name'}; ${dev.connection === 'usb' ? 'USB — cable and 2.4 GHz dongle share ids' : dev.connection})` }
     : { state: 'fail', name: null, connection: null, candidates: [], detail: 'no Flydigi device found (VID 37D7, 04B4:2412 or "Flydigi" name)' };
-  const label = audioDeviceLabel?.trim() || null;
-  const gameAudio: HapticsDiagnosticsExt['gameAudio'] = !label
-    ? { state: 'unknown', deviceLabel: null, detail: 'no game audio device selected (system default)' }
-    : /flydigi|apex|vader/i.test(label)
-      ? { state: 'ok', deviceLabel: label, detail: 'game audio goes to a Flydigi audio endpoint' }
-      : { state: 'warn', deviceLabel: label, detail: 'game audio is not routed to a Flydigi audio endpoint' };
+  const deviceLabel = audioDeviceLabel?.trim() || null;
+  const gameAudio: HapticsDiagnosticsExt['gameAudio'] = { deviceLabel, ...xhapticsGameAudio(ss.installed) };
   return {
     flydigiDevice,
     spaceStation: ss,

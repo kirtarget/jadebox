@@ -268,7 +268,7 @@ function HapticsSection() {
     {
       key: 'audio', tone: toneOf(diag.gameAudio.state), title: h.audio,
       body: det(diag.gameAudio) ?? (diag.gameAudio.deviceLabel ? h.audioOn(diag.gameAudio.deviceLabel) : h.audioNone),
-      right: <span className={diag.gameAudio.state === 'ok' ? 'ok-text' : 'warn-text'}>{diag.gameAudio.state === 'ok' ? h.stateYes : h.stateNo}</span>,
+      right: <span className={diag.gameAudio.state === 'ok' ? 'ok-text' : diag.gameAudio.state === 'unknown' ? 'muted' : 'warn-text'}>{diag.gameAudio.state === 'ok' ? h.stateYes : diag.gameAudio.state === 'unknown' ? h.stateUnknown : h.stateNo}</span>,
     },
     {
       key: 'reach', tone: toneOf(diag.audioReachesEngine.state), title: h.reaches,

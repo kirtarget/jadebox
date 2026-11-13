@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { connectionFromLinuxBus, connectionFromWindows, isSpaceStationApp, matchFlydigi, parseLinuxHidDir, parseWindowsIds } from '../../../src/main/platform/impl/flydigi';
+import { connectionFromLinuxBus, connectionFromWindows, isSpaceStationApp, matchFlydigi, parseLinuxHidDir, parseWindowsIds, xhapticsAudioCheck } from '../../../src/main/platform/impl/flydigi';
 
 test('matches Flydigi ids', () => {
   assert.equal(matchFlydigi(0x37d7, 0x2502)?.model, 'Flydigi Apex 6');
@@ -37,4 +37,19 @@ test('Space Station app match', () => {
   assert.ok(isSpaceStationApp(null, 'Flydigi, Inc.', null));
   assert.ok(isSpaceStationApp(null, null, '{7BCA93D4-0551-4DC8-8F96-D0FF8D259C99}_is1'));
   assert.ok(!isSpaceStationApp('Space Station 14', 'Space Wizards', 'Steam App 1255460'));
+});
+
+test('X-Haptics game profile for Xenith', () => {
+  const status = { games: [
+    { gameId: '506', displayName: 'Resident Evil Village', processNames: ['re8'] },
+    { gameId: 'user-1', displayName: 'Xenith', processNames: ['Xenith.exe'], processPath: 'C:\\Users\\u\\AppData\\Local\\Programs\\Xenith\\Xenith.exe' },
+  ] };
+  const on = { configurations: { 'user-1': { enabled: true, selectedBackend: 'realtime-audio' }, '506': { enabled: false } } };
+  const off = { configurations: { 'user-1': { enabled: false } } };
+  const exe = 'C:\\Users\\u\\AppData\\Local\\Programs\\Xenith\\Xenith.exe';
+  assert.equal(xhapticsAudioCheck(exe, on, status).state, 'ok');
+  assert.match(xhapticsAudioCheck(exe, off, status).detail, /turned off for "Xenith"/);
+  assert.match(xhapticsAudioCheck('C:\\dev\\node_modules\\electron\\dist\\electron.exe', on, status).detail, /electron\.exe is not added/);
+  assert.equal(xhapticsAudioCheck(exe, on, { games: [{ gameId: 'x', processPath: 'D:\\Apps\\xenith.EXE' }] }).state, 'warn'); // no config entry
+  assert.equal(xhapticsAudioCheck(exe, null, null).state, 'warn');
 });

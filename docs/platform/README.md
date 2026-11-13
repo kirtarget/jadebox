@@ -59,7 +59,7 @@ devices: AMD Radeon RX 9070 XT ×3 (active = first, gpuPreference 2), Microsoft 
 ```
 flydigiDevice: fail — no Flydigi device found (VID 37D7, 04B4:2412 or "Flydigi" name)
 spaceStation:  fail — not installed (no uninstall entry, Start menu entry or Program Files folder), not running
-gameAudio:     unknown — no game audio device selected
+gameAudio:     unknown — install Flydigi Space Station first
 audioReachesEngine: unknown — cannot be verified without the controller and Space Station
 ```
 (as expected: Apex 6 Pro not connected, Space Station not installed). Takes 2–5 s (PowerShell CIM query).
@@ -80,6 +80,15 @@ the PnP path (`BTHENUM`/`BTHLEDEVICE`, HID-over-GATT/HIDP service GUIDs) or HID 
 Inno Setup uninstall key `{7BCA93D4-0551-4DC8-8F96-D0FF8D259C99}_is1` (silentinstallhq), winget id
 `Flydigi.FlydigiSpaceStation`, publisher "Flydigi, Inc."; process names are not documented — matched by
 `/flydigi|spacestation|fdspace/i` (UNVERIFIED).
+
+## X-Haptics game audio (Space Station 4.2.3.1, observed 2026-11-13)
+The Apex 6 exposes no audio endpoint. Space Station's `xHaptics Engine.exe` captures each game's audio by PID (WASAPI
+process loopback, falls back to the default render device's system mix) and drives the motors over HID. So the
+"Game audio" check does not look at the output device. It reads `%APPDATA%\Flydigi\xHaptics Engine\config\`
+`xhaptics_game_status.json` (games, `processNames`/`processPath`) and `xhaptics_game_configuration.json`
+(`configurations[gameId].enabled`) and reports `ok` when Xenith's own exe is a game with X-Haptics on. A dev run
+(`electron.exe`) does not match a profile made for the installed `Xenith.exe`. Whether the engine actually
+receives audio (`audioReachesEngine`) is still not observable.
 
 ## Packages built on the dev PC (2026-10-22, smoke main from `build.mjs`, not the integrated app)
 | Artefact | Size | Notes |

@@ -215,7 +215,7 @@ export class XenithCore {
       return {
         flydigiDevice: { state: 'unknown', name: null, connection: null },
         spaceStation: { state: 'unknown', installed: false, running: false, version: null },
-        gameAudio: { state: label ? 'ok' : 'unknown', deviceLabel: label },
+        gameAudio: { state: 'unknown', deviceLabel: label },
         audioReachesEngine: { state: 'unknown' },
         rumble: { ...this.rumble },
       };

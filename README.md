@@ -177,6 +177,7 @@ A keepalive issue ended the 594-second run. The fix passed a shorter integrated 
 - The tested console ignored requests for bitrates above about 18 Mbps. Lower bitrate limits worked.
 - Cloud traffic routed through a VPN may connect without video. Excluding Xenith or the Xbox Cloud servers from the tunnel may help.
 - Flydigi Apex 6 Pro and X-Haptics still need testing with a physical controller.
+- X-Haptics does not need a Flydigi audio device, and the controller does not provide one. Add `Xenith.exe` as a game in Space Station's X-Haptics and keep any output device, headphones included. Space Station captures Xenith's audio directly. The "Game audio" check reads that Space Station game list. A development run (`electron.exe`) does not match a profile made for the installed app.
 - Steam Deck Gaming Mode and macOS require the follow-up checks described above.
 
 ## Build from source
