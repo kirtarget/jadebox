@@ -97,6 +97,9 @@ export const en: Strings = {
     overlayHelp: 'Hold View and Menu to open or close this menu, or press Esc on a keyboard.',
     overlayHelpDeck: 'Hold View and Menu to open this menu',
     reconnecting: 'Restoring the connection', noController: 'Not found',
+    bridgeTitle: 'Video is off: Controller Bridge is on',
+    bridgeBody: 'The stream is received but not shown, for playing on a TV connected to the Xbox. You can also turn this off in Settings, X-Haptics.',
+    bridgeOff: 'Show video',
   },
   cloud: {
     title: 'Cloud',

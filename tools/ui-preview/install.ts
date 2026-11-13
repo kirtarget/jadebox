@@ -15,12 +15,13 @@ const cfg: FakeConfig = {
   cloudLoading: scenario === 'cloud-loading',
   lang: params.get('lang') === 'en' ? 'en' : 'ru',
   scale: (params.get('scale') as FakeConfig['scale']) ?? 'm',
+  bridge: scenario === 'stream-bridge',
   layout: deck ? 'auto' : ((params.get('layout') as FakeConfig['layout']) ?? 'auto'),
 };
 installFakeApi(cfg);
 
 const modes: Record<string, FakeMode> = {
   connecting: 'connecting', 'connecting-cloud': 'connecting-cloud', 'conn-error': 'error-ice',
-  stream: 'streaming', 'stream-hud': 'streaming', 'stream-lost': 'reconnecting',
+  stream: 'streaming', 'stream-hud': 'streaming', 'stream-lost': 'reconnecting', 'stream-bridge': 'streaming',
 };
 fakeStreamConfig.mode = modes[scenario] ?? 'streaming';

@@ -32,8 +32,10 @@ function StreamChrome() {
   const hud = useApp(x => x.settings.video.hud);
   const corner = useApp(x => x.settings.video.hudCorner);
   const deck = useApp(x => x.deck);
+  const bridge = useApp(x => x.settings.haptics.bridgeMode);
   return (
     <>
+      {bridge && <BridgeNotice />}
       {hud !== 'off' && <Hud stats={sess.stats} mode={hud} corner={corner} lossTrend={sess.lossTrend} i18n={i18n} deck={deck} />}
       {sess.phase === 'reconnecting' && <Reconnecting />}
       {sess.overlayOpen && <SidePanel />}
@@ -98,6 +100,21 @@ function Reconnecting() {
       </div>
       <Button variant="primary" onClick={retry}>{copy.primary}</Button>
       <Button variant="outline" onClick={() => void disconnect()}>{copy.secondary}</Button>
+    </div>
+  );
+}
+
+/** Controller Bridge hides the video on purpose; without this the PC screen is just black. */
+function BridgeNotice() {
+  const { s } = useI18n();
+  return (
+    <div className="reconnect reconnect--center" role="status">
+      <StatusDot tone="warn" size={10} />
+      <div className="reconnect__text">
+        <strong>{s.stream.bridgeTitle}</strong>
+        <span className="muted">{s.stream.bridgeBody}</span>
+      </div>
+      <Button variant="primary" onClick={() => updateSettings({ haptics: { bridgeMode: false } })}>{s.stream.bridgeOff}</Button>
     </div>
   );
 }

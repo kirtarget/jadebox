@@ -503,6 +503,7 @@ html[data-streaming='true'] .app-ui { visibility: hidden; }
   position: absolute; left: 50%; bottom: 32px; transform: translateX(-50%); display: flex; align-items: center; gap: 16px;
   padding: 16px 20px; border-radius: var(--r-overlay); background: var(--scrim-strong); backdrop-filter: blur(16px); max-width: calc(100vw - 48px);
 }
+.reconnect--center { top: 50%; bottom: auto; transform: translate(-50%, -50%); }
 .reconnect > .dot { align-self: flex-start; margin-top: 6px; }
 .reconnect__text { display: flex; flex-direction: column; max-width: 460px; }
 .spanel {

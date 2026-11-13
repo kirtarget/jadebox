@@ -31,6 +31,7 @@ const SCENARIOS = [
   ['stream', 's=stream&input=gamepad'],
   ['stream-hud', 's=stream-hud'],
   ['stream-lost', 's=stream-lost'],
+  ['stream-bridge', 's=stream-bridge'],
   ['cloud', 's=cloud'],
   ['cloud-sheet', 's=cloud-sheet&input=gamepad'],
   ['cloud-search', 's=cloud-search'],

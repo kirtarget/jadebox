@@ -13,6 +13,7 @@ export interface FakeConfig {
   lang: 'ru' | 'en';
   scale: Settings['ui']['scale'];
   layout: Settings['ui']['layout'];
+  bridge?: boolean;
 }
 
 const listeners = new Set<(ev: XenithEvent) => void>();
@@ -34,6 +35,7 @@ export function installFakeApi(cfg: FakeConfig): void {
   settings.ui.lang = cfg.lang;
   settings.ui.scale = cfg.scale;
   settings.ui.layout = cfg.layout;
+  if (cfg.bridge) settings.haptics.bridgeMode = true;
   let account = cfg.signedIn ? { ...fx.fxAccount, hasCloud: cfg.hasCloud } : { signedIn: false, gamertag: null, avatarUrl: null, hasCloud: null };
   const history = cfg.history === 'full' ? fx.fxHistory().map(entry => english && entry.kind === 'cloud' ? { ...entry, targetName: 'Demo game 3' } : entry) : [];
   const cloud = fx.fxCloud().map((title, i) => english ? {

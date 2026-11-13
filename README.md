@@ -25,7 +25,7 @@
 - Frame generation is not built in. On Windows you can run [Lossless Scaling](https://store.steampowered.com/app/993090/Lossless_Scaling/) (paid, Steam) over the Xenith window: pick LSFG frame generation, scaling Off, and turn CAS and FSR off in Xenith so the picture is not processed twice. It adds about one frame of latency on top of the stream's. Not tested with Xenith yet.
 - Gamepad navigation. Use a gamepad throughout the app. Tap View + Menu for the Xbox button or hold them to open the Xenith menu. Configure stick dead zones, rumble, and trigger rumble.
 - Steam integration. Add Xenith and cloud game shortcuts to your Steam library with artwork.
-- Flydigi and X-Haptics diagnostics. Check the controller, Flydigi Space Station, and game audio. Controller bridge mode hides video on the PC while forwarding input and playing audio for X-Haptics. The Xbox supplies the TV picture over HDMI.
+- Flydigi and X-Haptics diagnostics. Check the controller, Flydigi Space Station, and game audio. Controller bridge mode hides video on the PC while forwarding input and playing audio for X-Haptics. The Xbox supplies the TV picture over HDMI. While it is on, the PC screen shows a notice with a Show video button, so a black screen is not mistaken for a broken stream.
 - Automatic reconnection. A local hardware test restored video about nine seconds after a dropped connection.
 
 ## Screenshots
