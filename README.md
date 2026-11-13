@@ -17,16 +17,49 @@
 
 ## Features
 
-- Remote Play from your Xbox at up to 1440p. Find a console linked to your account, wake it from standby, and connect. Choose Auto, 1440p, 1080p, or 720p in the streaming settings.
-- Xbox Cloud Gaming. Browse and search the Game Pass Ultimate catalogue, view cover art, and see queue estimates when servers are busy.
-- Stream statistics. See the received resolution, bitrate, network round-trip time, video buffer, decode time, and packet loss.
-- Streaming profiles. Choose "Lowest latency", "Picture quality", or "Battery saver".
-- Picture controls. Adjust CAS sharpening, FSR 1.0 upscaling, brightness, contrast, saturation, and how the video fits the window.
-- Frame generation is not built in. On Windows you can run [Lossless Scaling](https://store.steampowered.com/app/993090/Lossless_Scaling/) (paid, Steam) over the Xenith window: pick LSFG frame generation, scaling Off, and turn CAS and FSR off in Xenith so the picture is not processed twice. It adds about one frame of latency on top of the stream's. Not tested with Xenith yet.
-- Gamepad navigation. Use a gamepad throughout the app. Tap View + Menu for the Xbox button or hold them to open the Xenith menu. Configure stick dead zones, rumble, and trigger rumble.
-- Steam integration. Add Xenith and cloud game shortcuts to your Steam library with artwork.
-- Flydigi and X-Haptics diagnostics. Check the controller, Flydigi Space Station, and game audio. Controller bridge mode hides video on the PC while forwarding input and playing audio for X-Haptics. The Xbox supplies the TV picture over HDMI. While it is on, the PC screen shows a notice with a Show video button, so a black screen is not mistaken for a broken stream.
-- Automatic reconnection. A local hardware test restored video about nine seconds after a dropped connection.
+### Play your Xbox on a PC or Steam Deck
+
+Xenith shows your own Xbox on another screen. The game runs on the console, and Xenith receives the picture and sound over the network and sends your controller input back. You can play in another room, on a laptop, or on a Steam Deck while the TV is busy.
+
+Xenith finds the consoles linked to your account, wakes a console from standby, and connects with one button. The stream goes up to 1440p. Pick Auto, 1440p, 1080p, or 720p in the streaming settings.
+
+### Cloud games from Game Pass Ultimate
+
+With Game Pass Ultimate you can play without a console. The game runs on Microsoft's servers. Xenith shows the cloud catalogue with search and cover art. When servers are busy, it shows your place in the queue and an estimated wait.
+
+### Stream statistics you can trust
+
+The overlay shows what actually arrives: frame resolution, bitrate, network round-trip time, video buffer, decode time, and packet loss. If the console sends 1080p, Xenith shows 1080p even when you asked for 1440p. Use it to see whether lag comes from the network or from your device.
+
+### Profiles and picture controls
+
+Three profiles cover the common cases. "Lowest latency" keeps the video buffer at about 3 ms for fast games. "Picture quality" buffers more to smooth out an unstable network. "Battery saver" is for the Steam Deck.
+
+You can sharpen the picture (CAS), upscale a lower-resolution stream (FSR 1.0), adjust brightness, contrast, and saturation, and choose how the video fits the screen. Every effect can be turned off.
+
+### Smoother picture with Lossless Scaling
+
+Xenith has no built-in frame generation. On Windows you can run Lossless Scaling over the Xenith window to add generated frames. This can turn a 30 fps console game into 60 fps on your screen. See [Frame generation with Lossless Scaling](#frame-generation-with-lossless-scaling) for the settings and limits. This setup has not been tested with Xenith yet.
+
+### Gamepad first
+
+The whole app works with a gamepad, no mouse needed. During a game, tap View + Menu together to press the Xbox button, or hold them to open the Xenith menu. You can set stick dead zones, rumble, and trigger rumble. Mouse and keyboard work in cloud games that support them.
+
+### Steam and Steam Deck
+
+Xenith adds itself, your console, and individual cloud games to your Steam library with artwork. On the Deck it ships a controller template with gyro aiming and back buttons, switches the screen to 60 Hz while streaming, and reconnects after the Deck wakes from sleep. See [Steam Deck integration](#steam-deck-integration).
+
+### Controller bridge for Flydigi X-Haptics
+
+Some Flydigi controllers (for example the Apex series) have X-Haptics. Flydigi Space Station listens to game sound and turns it into vibration: you feel explosions, engines, and gunfire. This only works on a PC, because Space Station runs on Windows. An Xbox cannot run it.
+
+Controller bridge mode solves this. You play on the TV connected to the Xbox, as usual. The controller connects to the PC. Xenith forwards your input from the PC to the console, receives the game sound, and plays it so Space Station can turn it into vibration. Xenith hides the video on the PC, because you watch the TV. The TV picture comes straight from the Xbox over HDMI, with no streaming delay or compression.
+
+Turn it on in Settings > X-Haptics > Controller bridge. While it is on, the PC screen shows a note with a "Show video" button, so a black window is not mistaken for a fault. The same settings page checks the controller, Space Station, and the game audio. Hiding the video cut PC GPU load from about 1% to almost zero in a hardware test. The full setup with a physical Flydigi controller still needs testing.
+
+### Reconnection and privacy
+
+If the connection drops, Xenith starts a new session on its own. In a hardware test the picture came back in about nine seconds. You sign in on Microsoft's website, so Xenith never sees your password. Tokens stay in the operating system's secure storage and are never written to logs.
 
 ## Screenshots
 
@@ -96,6 +129,44 @@ Tokens use the operating system's secure storage on Windows and macOS. SteamOS a
 | Press the Xbox button | Tap View + Menu together | F2 or "Press the Xbox button" in the menu |
 | Toggle full screen | Use the session menu | F11 or F10 |
 | Disconnect | Select "Disconnect" in the menu | Select "Disconnect" in the menu |
+
+## Frame generation with Lossless Scaling
+
+[Lossless Scaling](https://store.steampowered.com/app/993090/Lossless_Scaling/) is a paid Windows app on Steam. Its LSFG frame generation draws extra frames between the ones it captures from a window. Many console games run at 30 fps. With LSFG x2 over Xenith you would see 60 fps on the PC screen.
+
+This setup has not been tested with Xenith yet. The steps below follow how Lossless Scaling works with any window. Treat the result as unverified until the test log has numbers.
+
+### What it costs
+
+- Latency. LSFG holds back about one source frame to draw the frame in between. At 30 fps that is about 33 ms on top of the stream's own delay. It is fine for driving and walking around, and you will feel it in fast shooting.
+- Artifacts. Generated frames can smear around the HUD, subtitles, and fast-moving edges.
+- GPU load on the PC. Frame generation runs on your graphics card, not on the console.
+
+### Settings in Xenith
+
+1. Settings > Streaming: pick the "Lowest latency" profile. A longer video buffer adds to LSFG's own delay.
+2. Settings > Video: set Sharpness (CAS) to 0 and turn FSR upscaling off. Lossless Scaling then works on the clean picture and does not process it twice.
+3. Keep "Picture size" on "Fit".
+
+### Settings in Lossless Scaling
+
+1. Scaling type: Off. You only want frame generation.
+2. Frame generation: LSFG 3.1.
+3. Mode: Fixed, multiplier 2. Fixed x2 turns 30 fps into 60.
+4. Capture API: WGC. If the picture does not appear, try DXGI.
+5. Sync mode: Default. Choose "Off (Allow tearing)" for lower latency if your monitor has VRR (FreeSync or G-Sync).
+6. Max frame latency: 1.
+7. Turn on "Draw FPS" for the first run, so you can see that generation works.
+
+### Start it
+
+1. Start a game in Xenith and switch to full screen with F11.
+2. Press Ctrl+Alt+S, the default Lossless Scaling hotkey, while the Xenith window is in front. Or click "Scale" in Lossless Scaling and switch to Xenith within the delay.
+3. Press the hotkey again to stop.
+
+### Open question: 30 fps game in a 60 fps stream
+
+The Xbox stream runs at 60 fps even when the game itself runs at 30. In that case every game frame reaches the PC twice. LSFG may then see the repeated frames and generate nothing new between them, and the picture stays at 30 fps of motion. This is the first thing to check in a hardware test with a 30 fps game such as Red Dead Redemption 2 or GTA V in Fidelity mode.
 
 ## Launch arguments
 
