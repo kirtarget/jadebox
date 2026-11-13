@@ -23,6 +23,7 @@ const SCENARIOS = [
   ['home-empty', 's=home-empty'],
   ['home-new', 's=home-new'],
   ['home-two', 's=home-two'],
+  ['home-update', 's=home-update'],
   ['home-error', 's=home-error'],
   ['home-busy', 's=home-busy'],
   ['connecting', 's=connecting'],

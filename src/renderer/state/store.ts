@@ -50,6 +50,7 @@ export type LoginStatus = 'idle' | 'loading' | 'waiting' | 'expired' | 'error' |
 export interface AppState {
   booted: boolean;
   platform: PlatformInfo | null;
+  update: string | null;        // newer release version from GitHub, null when up to date or unknown
   settings: Settings;
   account: Account | null;
   consoles: ConsoleInfo[] | null;
@@ -79,6 +80,7 @@ export function emptyStages(): Record<StageId, StageState> {
 let state: AppState = {
   booted: false,
   platform: null,
+  update: null,
   settings: DEFAULT_SETTINGS,
   account: null,
   consoles: null,

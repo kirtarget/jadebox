@@ -1,5 +1,6 @@
 import type { DeepPartial, HistoryEntry, LaunchIntent, Settings } from '../../shared/api';
 import type { XenithEventExt } from '../../shared/core-additions';
+import { checkForUpdate } from '../lib/update';
 import { onXenithEvent, parseIpcError } from '../lib/api';
 import { makeI18n } from '../i18n';
 import { readGamepads, sameControllers } from '../lib/controllers';
@@ -220,6 +221,7 @@ export async function boot(): Promise<void> {
   confirmed = settings;
   bootSnapshot = settings;
   setState({ platform, settings, account, booted: true });
+  void checkForUpdate(platform.version).then(update => { if (update) setState({ update }); });
   onSettingsChanged(settings);
   if (!account.signedIn) return;
   await afterSignIn();

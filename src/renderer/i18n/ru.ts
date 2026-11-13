@@ -42,6 +42,9 @@ export const ru = {
     XboxSeriesX: 'Xbox Series X', XboxSeriesS: 'Xbox Series S', XboxOne: 'Xbox One', XboxOneS: 'Xbox One S', XboxOneX: 'Xbox One X',
   } as Record<string, string>,
   home: {
+    updateTitle: (v: string) => `Доступна версия Xenith ${v}`,
+    updateBody: 'Скачайте новую версию с GitHub и установите поверх текущей. Настройки и вход сохранятся.',
+    updateOpen: 'Скачать',
     myConsole: 'Моя консоль',
     changeConsole: 'Сменить консоль',
     chooseConsole: 'Выберите консоль',

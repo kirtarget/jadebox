@@ -76,6 +76,10 @@ The launcher reached the sign-in screen on a Steam Deck OLED. A later fix for an
 
 The build configuration and GitHub Actions workflow publish DMG and ZIP packages for Apple Silicon only. There is no Intel Mac build. The builds are unsigned and have not been tested on a real Mac.
 
+### Updates
+
+At start-up Xenith asks GitHub (`api.github.com`) for the latest release. When a newer version exists, the home screen shows a card with a Download button that opens the Releases page. Xenith does not download or install anything itself: install the new build over the current one. Settings and sign-in are kept. Pre-releases are ignored. Without a network connection the check fails silently.
+
 ## First run
 
 1. Select "Sign in". Open [microsoft.com/link](https://www.microsoft.com/link) on your phone or computer, enter the code shown by Xenith, and sign in with the account linked to your Xbox. Enter your password only on Microsoft's website. Xenith does not receive it.

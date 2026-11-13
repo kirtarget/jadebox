@@ -286,7 +286,7 @@ export interface XenithApi {
     minimize(): Promise<void>;
     quit(): Promise<void>;
   };
-  openExternal(url: string): Promise<void>;   // only https://www.microsoft.com/link and Flydigi download page are allowed
+  openExternal(url: string): Promise<void>;   // only https://www.microsoft.com/link, the Flydigi download page and Xenith releases are allowed
   copyText(text: string): Promise<void>;
   exportLogs(): Promise<string>;              // path of a zip/txt in Downloads, tokens redacted
 

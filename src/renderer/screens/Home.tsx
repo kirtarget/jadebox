@@ -13,6 +13,7 @@ import { connect } from '../state/session';
 import { setState, useApp } from '../state/store';
 import { AccountChip } from './Account';
 import { ErrorCard } from './errors';
+import { RELEASES_URL } from '../lib/update';
 
 export function Home() {
   const i18n = useI18n();
@@ -49,7 +50,10 @@ export function Home() {
     return (
       <div className="page page--deck">
         <div className="deck-home">
-          {hero}
+          <div className="deck-home__main">
+            {hero}
+            <UpdateCard />
+          </div>
           <div className="deck-home__side">
             <LastSessionCard last={lastForConsole} deck />
             <QualityCard deck />
@@ -67,6 +71,7 @@ export function Home() {
         <p className="page__eyebrow">{s.home.myConsole}</p>
         <AccountChip />
       </header>
+      <UpdateCard />
       {hero}
       {consoles?.length !== 0 && <>
         <div className="cards3">
@@ -80,6 +85,21 @@ export function Home() {
       </>}
       <HintBar hints={hints} />
     </div>
+  );
+}
+
+function UpdateCard() {
+  const { s } = useI18n();
+  const update = useApp(x => x.update);
+  if (!update) return null;
+  return (
+    <section className="card update" aria-live="polite">
+      <div className="card__main">
+        <strong>{s.home.updateTitle(update)}</strong>
+        <span className="muted">{s.home.updateBody}</span>
+      </div>
+      <Button variant="secondary" navId="update" onClick={() => void window.xenith.openExternal(RELEASES_URL)}>{s.home.updateOpen}</Button>
+    </section>
   );
 }
 
