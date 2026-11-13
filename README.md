@@ -58,7 +58,7 @@ Screenshots use demo data and placeholder game covers. Interface mockups are in 
 
 ### Windows 11
 
-1. Download `Xenith-Setup-<version>.exe` from [Releases](https://github.com/kirtarget/xenith/releases). A portable `Xenith-<version>-win-x64.zip` is also supported by the build configuration.
+1. Download `Xenith-Setup-<version>.exe` from [Releases](https://github.com/kirtarget/xenith/releases). A portable `Xenith-<version>-win-x64.zip` is also published.
 2. Run the installer. It installs for the current user without administrator rights.
 3. The builds are unsigned. If Windows SmartScreen blocks the installer, select "More info", then "Run anyway".
 
@@ -66,7 +66,7 @@ Screenshots use demo data and placeholder game covers. Interface mockups are in 
 
 Xenith has a native Linux build. See the [Steam Deck notes](docs/platform/steam-deck.md) for setup details and troubleshooting.
 
-1. In Desktop Mode, download `Xenith-<version>-linux-x64.AppImage` and allow it to run as a program in its file properties.
+1. In Desktop Mode, download `Xenith-<version>-linux-x86_64.AppImage` and allow it to run as a program in its file properties.
 2. Add it to Steam with "Add a Non-Steam Game" or the "Add now" button in Xenith's Steam settings. Leave Proton disabled for the shortcut.
 3. Keep Steam Input enabled with the "Gamepad" template so the Deck controls appear as an Xbox controller.
 
@@ -74,7 +74,7 @@ The launcher reached the sign-in screen on a Steam Deck OLED. A later fix for an
 
 ### macOS
 
-The build configuration and GitHub Actions workflow include DMG and ZIP packages for Intel and Apple Silicon. The builds are unsigned and have not been tested on a real Mac.
+The build configuration and GitHub Actions workflow publish DMG and ZIP packages for Apple Silicon only. There is no Intel Mac build. The builds are unsigned and have not been tested on a real Mac.
 
 ## First run
 
