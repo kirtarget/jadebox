@@ -116,6 +116,8 @@ export class XenithStreamController implements StreamController {
   static readonly RESESSION_DELAYS_MS = [1500, 6000];
   /** Chromium's own ICE consent checks often recover a short 'disconnected' blip by themselves. */
   static readonly DISCONNECT_GRACE_MS = 4000;
+  /** Debug events that also go to the session log file (connection, reconnect cause, controllers). */
+  static readonly LOGGED = new Set(['state', 'pc.state', 'loss', 'main.sessionError', 'error', 'stop.err', 'controllers', 'pad.active']);
   /** After this long streaming without trouble the re-session budget is refilled. */
   static readonly STABLE_RESET_MS = 60_000;
 
@@ -137,7 +139,7 @@ export class XenithStreamController implements StreamController {
 
   private debug(type: string, data?: unknown) {
     const e = { at: Date.now(), type, data };
-    if (type.startsWith('post.')) this.diag(type, data);
+    if (type.startsWith('post.') || XenithStreamController.LOGGED.has(type) || type.startsWith('resession')) this.diag(type.toLowerCase(), data);
     for (const fn of this.debugListeners) { try { fn(e); } catch { /* ignore */ } }
   }
 
@@ -312,6 +314,7 @@ export class XenithStreamController implements StreamController {
       overlay: () => { if (this.live === live) { this.debug('overlayRequest'); this.emit('overlayRequest'); } },
       hudToggle: () => { if (this.live === live) { this.debug('hudToggle'); this.emit('hudToggle'); } },
       controllers: (list) => { if (this.live === live) { this.debug('controllers', list); this.emit('controllers', list); } },
+      activePad: (pad) => { if (this.live === live) this.debug('pad.active', pad); },
       rumble: (r) => {
         if (this.live !== live) return;
         this.emit('rumble', r);

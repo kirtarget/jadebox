@@ -208,7 +208,7 @@ export class XenithCore {
   reportStreamDiag(event: string, data?: unknown) {
     if (typeof event !== 'string' || !/^[a-z][a-z0-9_.]{0,40}$/.test(event)) return;
     const body = JSON.stringify(data ?? null);
-    log(`stream.${event}`, body.length > 2000 ? body.slice(0, 2000) : data, /err|black/.test(event) ? 'warn' : 'info');
+    log(`stream.${event}`, body.length > 2000 ? body.slice(0, 2000) : data, /err|black|loss/.test(event) ? 'warn' : 'info');
   }
 
   async hapticsDiagnostics(): Promise<HapticsDiagnostics> {

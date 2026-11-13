@@ -53,6 +53,7 @@ export interface InputCallbacks {
   hudToggle(): void;
   controllers(list: ControllerInfo[]): void;
   rumble(r: RumbleEvent): void;
+  activePad?(pad: { index: number; id: string } | null): void;
 }
 
 export class InputManager {
@@ -131,6 +132,8 @@ export class InputManager {
   }
 
   private activePad = -1;
+  private reportedPad = -2;
+  private reportedId: string | null = null;
 
   /** Picks the pad the player is actually using: the last one that showed input (button or stick past
    *  0.35). Sticky until another pad shows input. Before any input: the first non-virtual pad. */
@@ -148,6 +151,11 @@ export class InputManager {
     }
     const cur = this.activePad >= 0 ? pads[this.activePad] : null;
     if (!cur || !cur.connected) this.activePad = firstReal;
+    const id = this.activePad >= 0 ? pads[this.activePad]?.id ?? '' : null;
+    if (this.activePad !== this.reportedPad || id !== this.reportedId) {
+      this.reportedPad = this.activePad; this.reportedId = id;
+      this.cb.activePad?.(id === null ? null : { index: this.activePad, id });
+    }
     this.player._gamepad_index = this.activePad;
   }
 

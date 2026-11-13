@@ -4,7 +4,7 @@ import { InputManager, buildMapping, describeGamepad } from '../../src/renderer/
 
 let clock = 0;
 Object.defineProperty(globalThis, 'performance', { value: { now: () => clock }, configurable: true, writable: true });
-const pads: any[] = [{ connected: true, index: 0, id: 'Xbox Wireless Controller (STANDARD GAMEPAD Vendor: 045e Product: 0b13)', buttons: Array.from({ length: 17 }, () => ({ pressed: false, value: 0 })) }];
+const pads: any[] = [{ connected: true, index: 0, id: 'Xbox Wireless Controller (STANDARD GAMEPAD Vendor: 045e Product: 0b13)', axes: [0, 0, 0, 0], buttons: Array.from({ length: 17 }, () => ({ pressed: false, value: 0 })) }];
 Object.defineProperty(globalThis, 'navigator', { value: { getGamepads: () => pads }, configurable: true, writable: true });
 (globalThis as any).window = { addEventListener() {}, removeEventListener() {}, setInterval: () => 1 };
 (globalThis as any).document = { pointerLockElement: null };
@@ -20,7 +20,8 @@ const player: any = {
 };
 const ev: string[] = [];
 const rumbles: any[] = [];
-const im = new InputManager(player, { overlay: () => ev.push('overlay'), hudToggle: () => ev.push('hud'), controllers: (l) => ev.push('controllers:' + l.length), rumble: (r) => rumbles.push(r) });
+const padLog: any[] = [];
+const im = new InputManager(player, { overlay: () => ev.push('overlay'), hudToggle: () => ev.push('hud'), controllers: (l) => ev.push('controllers:' + l.length), rumble: (r) => rumbles.push(r), activePad: (p) => padLog.push(p) });
 im.install();
 im.apply({ controllers: { vibration: true, triggerRumble: false, deadZone: 0.1, guideCombo: true, overlayCombo: true, mouseKeyboard: false, remap: {} } } as any);
 const ic = player.getChannelProcessor('input');
@@ -53,7 +54,11 @@ const ok = (c: boolean, m: string) => { console.log((c ? 'PASS ' : 'FAIL ') + m)
   ic.onMessage({ data: buf });
   ok(rumbles.length === 1 && rumbles[0].left === 0.5 && rumbles[0].lt === 0.8 && rumbles[0].durationMs === 16, 'rumble parsed');
   ok(delivered.length === 1 && delivered[0][6] === 0 && delivered[0][7] === 0 && delivered[0][4] === 50, 'trigger rumble zeroed for pad');
-  // 7. helpers
+  // 7. active pad is reported once per change, not every tick
+  ok(padLog.length === 1 && padLog[0]?.index === 0, 'active pad reported once');
+  pads[0] = { ...pads[0], connected: false }; tick(); ok(padLog.length === 2 && padLog[1] === null, 'pad loss reported');
+  pads[0] = { ...pads[0], connected: true }; tick(); tick(); ok(padLog.length === 3 && padLog[2]?.index === 0, 'pad return reported once');
+  // 8. helpers
   const m = buildMapping({ A: 'B' })!; ok(m.B === '0' && m.A === '99', 'remap A->B');
   const d = describeGamepad({ id: '37d7-2401-Flydigi APEX 6', index: 1 } as any); ok(d.isFlydigi && d.name === 'Flydigi APEX 6', 'flydigi linux id');
   const v = describeGamepad({ id: 'Xbox 360 Controller (XInput STANDARD GAMEPAD)', index: 2 } as any); ok(v.connection === 'unknown' && v.name.startsWith('Xbox 360'), 'xinput id');
