@@ -14,6 +14,7 @@ import { setState, useApp } from '../state/store';
 import { AccountChip } from './Account';
 import { ErrorCard } from './errors';
 import { RELEASES_URL } from '../lib/update';
+import type { XenithApiFull } from '../../shared/core-additions';
 
 export function Home() {
   const i18n = useI18n();
@@ -95,10 +96,12 @@ function UpdateCard() {
   return (
     <section className="card update" aria-live="polite">
       <div className="card__main">
-        <strong>{s.home.updateTitle(update)}</strong>
-        <span className="muted">{s.home.updateBody}</span>
+        <strong>{update.ready ? s.home.updateReadyTitle(update.version) : s.home.updateTitle(update.version)}</strong>
+        <span className="muted">{update.ready ? s.home.updateReadyBody : s.home.updateBody}</span>
       </div>
-      <Button variant="secondary" navId="update" onClick={() => void window.xenith.openExternal(RELEASES_URL)}>{s.home.updateOpen}</Button>
+      {update.ready
+        ? <Button variant="primary" navId="update" onClick={() => (window.xenith as XenithApiFull).installUpdate()}>{s.home.updateRestart}</Button>
+        : <Button variant="secondary" navId="update" onClick={() => void window.xenith.openExternal(RELEASES_URL)}>{s.home.updateOpen}</Button>}
     </section>
   );
 }

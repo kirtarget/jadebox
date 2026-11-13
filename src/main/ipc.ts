@@ -2,6 +2,7 @@
 // fire-and-forget methods use ipcMain.on. Events go out on 'xenith:event' (see main.ts).
 // Only the main window's top frame may call in.
 import { BrowserWindow, clipboard, ipcMain, shell, type IpcMainEvent, type IpcMainInvokeEvent } from 'electron';
+import { installUpdate } from './updater';
 import type { XenithApi } from '../shared/api';
 import type { XenithCoreExtras } from '../shared/core-additions';
 import type { XenithCore } from './core';
@@ -95,6 +96,7 @@ export function registerIpc(core: XenithCore, getWindow: () => BrowserWindow | n
     reportAudioOutputs: (list) => core.reportAudioOutputs(list),
     reportRumble: (r) => core.reportRumble(r),
     reportStreamDiag: (event, data) => core.reportStreamDiag(event, data),
+    installUpdate: () => installUpdate(),
   };
   for (const [name, fn] of Object.entries(fire)) on(name, fn);
 }

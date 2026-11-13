@@ -204,6 +204,9 @@ function onEvent(ev: XenithEventExt): void {
     case 'launchIntent':
       void applyIntent(ev.intent);
       break;
+    case 'updateReady':
+      setState({ update: { version: ev.version, ready: true } });
+      break;
     default:
       handleMainEvent(ev);
   }
@@ -221,7 +224,8 @@ export async function boot(): Promise<void> {
   confirmed = settings;
   bootSnapshot = settings;
   setState({ platform, settings, account, booted: true });
-  void checkForUpdate(platform.version).then(update => { if (update) setState({ update }); });
+  if (platform.updateReady) setState({ update: { version: platform.updateReady, ready: true } });
+  else if (!platform.autoUpdate) void checkForUpdate(platform.version).then(v => { if (v) setState({ update: { version: v, ready: false } }); });
   onSettingsChanged(settings);
   if (!account.signedIn) return;
   await afterSignIn();

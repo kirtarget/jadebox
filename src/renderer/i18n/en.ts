@@ -28,6 +28,7 @@ export const en: Strings = {
   consoleType: { XboxSeriesX: 'Xbox Series X', XboxSeriesS: 'Xbox Series S', XboxOne: 'Xbox One', XboxOneS: 'Xbox One S', XboxOneX: 'Xbox One X' },
   home: {
     updateTitle: (v: string) => `Xenith ${v} is available`, updateBody: 'Download the new version from GitHub and install it over this one. Settings and sign-in are kept.', updateOpen: 'Download',
+    updateReadyTitle: (v: string) => `Xenith ${v} is downloaded`, updateReadyBody: 'Restart to install it. Settings and sign-in are kept.', updateRestart: 'Restart and update',
     myConsole: 'My console', changeConsole: 'Change console', chooseConsole: 'Choose a console',
     remoteReady: 'Remote Play is enabled on the console',
     remoteNotReady: 'Remote Play is off: enable “Remote features” in Xbox settings',

@@ -228,6 +228,8 @@ export interface PlatformInfo {
   version: string;                 // Xenith version
   electron: string;
   chrome: string;
+  autoUpdate?: boolean;            // this build downloads and installs updates itself
+  updateReady?: string | null;     // version already downloaded and waiting for a restart
 }
 
 export interface LaunchIntent {

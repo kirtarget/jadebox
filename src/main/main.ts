@@ -15,6 +15,8 @@ import { tagSteamGameWindow } from './steam-window';
 import { registerPowerEvents } from './power-events';
 import { createRefreshMatcher } from './platform/impl/refresh';
 import { run as runCmd } from './platform/impl/sys';
+import { refreshSteamLauncher } from './platform/impl/steam';
+import { startUpdater } from './updater';
 
 // Fixed userData (<appData>/xenith) regardless of productName / dev vs packaged: the secure token
 // store lives in <userData>/secure and must stay where existing sign-ins put it.
@@ -155,6 +157,8 @@ function bootstrap() {
     Menu.setApplicationMenu(null);
     stopPowerEvents = registerPowerEvents(state => emit({ type: 'power', state }), () => core.sessions.stopAll('replaced'));
     createWindow();
+    startUpdater();
+    refreshSteamLauncher();
     app.getGPUInfo('basic').then((g: any) => log('gpu.info', {
       devices: (g?.gpuDevice ?? []).map((d: any) => ({ active: d.active, vendorId: d.vendorId, deviceId: d.deviceId, driverVersion: d.driverVersion })),
       overlays: g?.auxAttributes?.overlayInfo ?? null,

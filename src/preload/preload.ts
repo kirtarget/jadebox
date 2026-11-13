@@ -59,6 +59,7 @@ const api: XenithApiFull = {
   reportAudioOutputs: (list) => send('reportAudioOutputs', list),
   reportRumble: (r) => send('reportRumble', r),
   reportStreamDiag: (event, data) => send('reportStreamDiag', event, data),
+  installUpdate: () => send('installUpdate'),
 
   on: (listener) => {
     const h = (_e: Electron.IpcRendererEvent, ev: XenithEvent) => { try { listener(ev); } catch (err) { console.error(err); } };

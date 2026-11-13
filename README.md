@@ -111,7 +111,15 @@ The build configuration and GitHub Actions workflow publish DMG and ZIP packages
 
 ### Updates
 
-At start-up Xenith asks GitHub (`api.github.com`) for the latest release. When a newer version exists, the home screen shows a card with a Download button that opens the Releases page. Xenith does not download or install anything itself: install the new build over the current one. Settings and sign-in are kept. Pre-releases are ignored. Without a network connection the check fails silently.
+At start-up Xenith checks GitHub Releases for a newer version. How it updates depends on how it was installed:
+
+| Installed from | What happens |
+|---|---|
+| Windows installer (`Xenith-Setup-<version>.exe`) | The update downloads in the background. The home screen then shows "Restart and update". If you just quit, it installs on exit. |
+| AppImage (Steam Deck, Linux) | The update downloads in the background and installs only when you select "Restart and update". The new file replaces the old one in the same folder, and the Steam shortcut is pointed at it on the next start. |
+| Portable zip, tar.gz, macOS | Xenith shows a card with a Download button that opens the Releases page. Install the new build yourself. |
+
+Settings and sign-in are kept. Pre-releases and draft releases are ignored. Without a network connection the check fails silently. Set `XENITH_NO_AUTOUPDATE=1` to turn off automatic downloads. Automatic installation has been checked with automated packaging only, not yet across two real releases.
 
 ## First run
 

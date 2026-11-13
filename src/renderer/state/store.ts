@@ -50,7 +50,7 @@ export type LoginStatus = 'idle' | 'loading' | 'waiting' | 'expired' | 'error' |
 export interface AppState {
   booted: boolean;
   platform: PlatformInfo | null;
-  update: string | null;        // newer release version from GitHub, null when up to date or unknown
+  update: { version: string; ready: boolean } | null;  // ready: downloaded by main, else only known from GitHub
   settings: Settings;
   account: Account | null;
   consoles: ConsoleInfo[] | null;

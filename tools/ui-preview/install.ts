@@ -20,6 +20,7 @@ const cfg: FakeConfig = {
 };
 installFakeApi(cfg);
 if (scenario === 'home-update') { const x = window.xenith, real = x.platform.bind(x); x.platform = async () => ({ ...(await real()), version: '0.2.0' }); }
+if (scenario === 'home-update-ready') { const x = window.xenith, real = x.platform.bind(x); x.platform = async () => ({ ...(await real()), autoUpdate: true, updateReady: '9.9.0' }); }
 // Release check: offline by default; ?s=home-update fakes a newer GitHub release.
 const realFetch = window.fetch.bind(window);
 window.fetch = (input, init) => String(input).startsWith('https://api.github.com/')

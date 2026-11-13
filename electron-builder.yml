@@ -100,4 +100,9 @@ mac:
 dmg:
   artifactName: ${productName}-${version}-mac-${arch}.dmg
 
-publish: null
+# Writes app-update.yml into the app and latest*.yml next to the installers; CI uploads them, electron-updater reads them.
+publish:
+  provider: github
+  owner: kirtarget
+  repo: xenith
+  releaseType: release

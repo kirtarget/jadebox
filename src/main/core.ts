@@ -1,5 +1,6 @@
 // XenithCore: composes auth, REST, settings, history, catalog and sessions. ipc.ts is a thin mapping onto it.
 import { app, session as electronSession } from 'electron';
+import { updateReadyVersion, updaterSupported } from './updater';
 import { existsSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type {
@@ -57,6 +58,10 @@ export class XenithCore {
 
   // ─── platform / launch ───
   platformInfo(): PlatformInfo {
+    return { ...this.basePlatformInfo(), autoUpdate: updaterSupported(), updateReady: updateReadyVersion() };
+  }
+
+  private basePlatformInfo(): PlatformInfo {
     try { return platform.info(); } catch { /* platform layer not landed yet */ }
     let isSteamDeck = false;
     if (process.platform === 'linux') {
