@@ -23,9 +23,13 @@ Xenith shows your own Xbox on another screen. The game runs on the console, and 
 
 Xenith finds the consoles linked to your account, wakes a console from standby, and connects with one button. The stream goes up to 1440p. Pick Auto, 1440p, 1080p, or 720p in the streaming settings.
 
+Remote Play is free. Any Xbox account works, and no Game Pass subscription is needed. You need your own Xbox One or Xbox Series X|S connected to the internet. On the console, turn on Settings > Devices & connections > Remote features and set the power mode to Sleep, otherwise the console cannot wake for a connection. Any game installed on the console can be streamed, including games bought outside Game Pass.
+
 ### Cloud games from Game Pass Ultimate
 
 With Game Pass Ultimate you can play without a console. The game runs on Microsoft's servers. Xenith shows the cloud catalogue with search and cover art. When servers are busy, it shows your place in the queue and an estimated wait.
+
+Cloud gaming needs a Game Pass plan that includes it, and it works only in countries where Microsoft offers Xbox Cloud Gaming. It is not officially available in Russia. Check Microsoft's current plans and country list before you subscribe.
 
 ### Stream statistics you can trust
 
