@@ -47,11 +47,10 @@ export const IconKeyboard = ({ size = 18, ...p }: P) => (
   <svg {...base(size)} {...p}><rect x="3" y="6.5" width="18" height="11" rx="2" /><path d="M7 10h.01M10 10h.01M13 10h.01M16 10h.01M8 14h8" /></svg>
 );
 
-/** Xenith mark (build/icon.svg): two-stroke X, the second stroke split where it passes under the first. */
-export const XenithMark = ({ size = 22, ...p }: P) => (
+/** Jadebox mark (build/icon.svg): an angular J inside a box outline. */
+export const JadeboxMark = ({ size = 22, ...p }: P) => (
   <svg width={size} height={size} viewBox="200 200 624 624" fill="currentColor" aria-hidden focusable={false} {...p}>
-    <polygon points="250,232 378,232 774,792 646,792" />
-    <polygon points="250,792 378,792 470,662 406,572" />
-    <polygon points="618,452 554,362 646,232 774,232" />
+    <path fillRule="evenodd" d="M200 200h624v624H200z M328 328v368h368V328z" />
+    <polygon points="512,392 624,392 624,580 560,644 400,644 400,540 512,540" />
   </svg>
 );

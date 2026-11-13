@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { Button } from '../components/controls';
 import { HintBar } from '../components/data';
 import { Skeleton, StatusDot } from '../components/feedback';
-import { XenithMark } from '../components/Icons';
+import { JadeboxMark } from '../components/Icons';
 import { useI18n } from '../i18n';
 import { useNow } from '../lib/view';
 import { useNavLayer, useScreenFocus } from '../nav/hooks';
@@ -66,7 +66,7 @@ export function Login() {
     <div className={deck ? 'login login--deck' : 'login'}>
       <main className="login__inner">
         <div className="login__intro">
-          <div aria-hidden className="brand brand--l"><XenithMark size={24} /></div>
+          <div aria-hidden className="brand brand--l"><JadeboxMark size={24} /></div>
           <h1 className="login__title">{l.title}</h1>
           <p className="login__body">{l.body}</p>
           <ol className="login__steps">

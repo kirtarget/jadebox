@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import type { UiScale } from '../shared/api';
 import { cx } from './components/controls';
 import { ToastHost } from './components/feedback';
-import { IconCloud, IconConsole, IconSliders, XenithMark } from './components/Icons';
+import { IconCloud, IconConsole, IconSliders, JadeboxMark } from './components/Icons';
 import { I18nContext, makeI18n, useI18n } from './i18n';
 import { readGamepads } from './lib/controllers';
 import { reportAudioOutputs } from './lib/api';
@@ -133,7 +133,7 @@ function NavRail({ screen }: { screen: Screen }) {
   const locked = screen === 'connecting' && phase === 'connecting';
   return (
     <nav className="rail-nav" aria-label={s.nav.aria} data-nav-region="" data-nav-contain="v">
-      <div aria-hidden className="brand"><XenithMark size={20} /></div>
+      <div aria-hidden className="brand"><JadeboxMark size={20} /></div>
       {items.map(it => (
         <button
           key={it.id}
@@ -183,7 +183,7 @@ function DeckTabs({ screen }: { screen: Screen }) {
 function BootSkeleton({ deck }: { deck: boolean }) {
   return (
     <div className={deck ? 'shell shell--deck' : 'shell'} aria-busy="true">
-      {deck ? <header className="dtabs" /> : <nav className="rail-nav"><div aria-hidden className="brand"><XenithMark size={20} /></div></nav>}
+      {deck ? <header className="dtabs" /> : <nav className="rail-nav"><div aria-hidden className="brand"><JadeboxMark size={20} /></div></nav>}
       <div className="shell__main"><div className={deck ? 'page page--deck' : 'page'}>
         <div className="hero"><span className="skel" style={{ width: 120, height: 44, borderRadius: 8 }} /><span className="skel" style={{ width: 220, height: 14, borderRadius: 7 }} /><span className="skel" style={{ width: 200, height: 56, borderRadius: 14 }} /></div>
       </div></div>

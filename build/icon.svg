@@ -1,12 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
-  <!-- Xenith mark: an "X" built from two strokes. One continuous diagonal, the other split by a gap where it
-       passes under the first one, with clipped (angled) ends. Colours: #57E36F on #0B1018. Original artwork, MIT. -->
+  <!-- Jadebox mark: an angular "J" inside a box outline. Colours: #57E36F on #0B1018. Original artwork, MIT. -->
   <rect x="0" y="0" width="1024" height="1024" rx="232" ry="232" fill="#0B1018"/>
   <g fill="#57E36F">
-    <!-- stroke 1: top-left → bottom-right, full length, angled ends -->
-    <polygon points="250,232 378,232 774,792 646,792"/>
-    <!-- stroke 2: bottom-left → top-right, interrupted around the crossing -->
-    <polygon points="250,792 378,792 470,662 406,572"/>
-    <polygon points="618,452 554,362 646,232 774,232"/>
+    <path fill-rule="evenodd" d="M200 200h624v624H200z M328 328v368h368V328z"/>
+    <polygon points="512,392 624,392 624,580 560,644 400,644 400,540 512,540"/>
   </g>
 </svg>
